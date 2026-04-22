@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Exam Link Manager</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #081a4b, #1f3b8a);
+      min-height: 100vh;
+      color: white;
+    }
+
+    .dashboard-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #03133d;
+      padding: 30px 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .logo h1 {
+      color: #3fc3ff;
+      font-size: 34px;
+      margin-bottom: 8px;
+    }
+
+    .logo p {
+      font-size: 16px;
+      color: #ffffff;
+    }
+
+    .sidebar nav {
+      margin-top: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .sidebar nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      display: block;
+    }
+
+    .sidebar nav a.active {
+      background: #123b63;
+    }
+
+    .sidebar-logout {
+      width: 100%;
+      background: #42c4ff;
+      color: black;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .page-title {
+      font-size: 56px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 22px;
+      margin-bottom: 35px;
+    }
+
+    .panel {
+      background: #f2f2f2;
+      color: black;
+      border-radius: 28px;
+      padding: 36px;
+      margin-bottom: 28px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"],
+    input[type="url"] {
+      width: 260px;
+      padding: 14px 16px;
+      border: 1px solid #bcbcbc;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .btn-main {
+      background: #42c4ff;
+      color: black;
+      border: none;
+      padding: 18px 26px;
+      border-radius: 18px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      min-width: 220px;
+    }
+
+    h2 {
+      color: #173d94;
+      font-size: 34px;
+      margin-bottom: 18px;
+    }
+
+    .exam-item {
+      background: white;
+      border: 1px solid #d9d9d9;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .exam-item p {
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .exam-item a,
+    #latestLink a {
+      color: #3b2bbf;
+      font-weight: bold;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    .message {
+      margin-top: 16px;
+      font-weight: bold;
+      min-height: 24px;
+    }
+
+    .success {
+      color: green;
+    }
+
+    .error {
+      color: #c62828;
+    }
+
+    .muted {
+      color: #666;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .page-title {
+        font-size: 38px;
+      }
+
+      .form-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      input[type="text"],
+      input[type="url"],
+      .btn-main {
+        width: 100%;
+      }
+
+      .main-content {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div>
+        <div class="logo">
+          <h1>ADMIN</h1>
+          <p>Control Panel</p>
+        </div>
+
+        <nav>
+          <a href="admin-dashboard.html">Dashboard</a>
+          <a href="admin-students.html">Students</a>
+          <a href="#">Questions</a>
+          <a href="admin-exams.html" class="active">Exams</a>
+          <a href="#">Results</a>
+          <a href="#">Payments</a>
+        </nav>
+      </div>
+
+      <button id="logoutBtn" class="sidebar-logout">Logout</button>
+    </aside>
+
+    <main class="main-content">
+      <h1 class="page-title">Exam Link Manager</h1>
+      <p class="subtitle">Paste current Testmoz link for students</p>
+
+      <div class="panel">
+        <div class="form-row">
+          <input type="text" id="examTitle" placeholder="Exam Title" />
+          <input type="url" id="examLink" placeholder="Paste Testmoz Exam Link" />
+          <button type="button" class="btn-main" id="saveExamBtn">Save Exam Link</button>
+        </div>
+        <p id="message" class="message"></p>
+      </div>
+
+      <div class="panel">
+        <h2>Latest Saved Exam</h2>
+        <p><b>Title:</b> <span id="latestTitle">Loading...</span></p>
+        <p><b>Link:</b> <span id="latestLink">Loading...</span></p>
+      </div>
+
+      <div class="panel">
+        <h2>Previous Exams</h2>
+        <div id="previousExamsList">Loading exams...</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const examTitleInput = document.getElementById("examTitle");
+    const examLinkInput = document.getElementById("examLink");
+    const messageBox = document.getElementById("message");
+    const saveExamBtn = document.getElementById("saveExamBtn");
+
+    function setMessage(text, type = "success") {
+      messageBox.textContent = text;
+      messageBox.className = "message " + type;
+    }
+
+    function isValidUrl(url) {
+      try {
+        new URL(url);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    async function saveExam() {
+      const title = examTitleInput.value.trim();
+      const link = examLinkInput.value.trim();
+
+      if (!title || !link) {
+        setMessage("Please fill all fields", "error");
+        return;
+      }
+
+      if (!isValidUrl(link)) {
+        setMessage("Please enter a valid exam link", "error");
+        return;
+      }
+
+      saveExamBtn.disabled = true;
+      saveExamBtn.textContent = "Saving...";
+      setMessage("");
+
+      try {
+        const response = await fetch("/save-exam-link", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            exam_title: title,
+            exam_link: link
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          setMessage("Exam link saved successfully", "success");
+          examTitleInput.value = "";
+          examLinkInput.value = "";
+          await loadLatestExam();
+          await loadPreviousExams();
+        } else {
+          setMessage(data.message || "Failed to save exam", "error");
+        }
+      } catch (error) {
+        console.error("Save error:", error);
+        setMessage("Server error while saving exam", "error");
+      } finally {
+        saveExamBtn.disabled = false;
+        saveExamBtn.textContent = "Save Exam Link";
+      }
+    }
+
+    async function loadLatestExam() {
+      try {
+        const response = await fetch("/latest-exam-link");
+        const data = await response.json();
+
+        if (data.success && data.exam) {
+          document.getElementById("latestTitle").textContent = data.exam.exam_title || "Untitled Exam";
+          document.getElementById("latestLink").innerHTML =
+            `<a href="${data.exam.exam_link}" target="_blank">Open Exam</a>`;
+        } else {
+          document.getElementById("latestTitle").textContent = "No exam saved";
+          document.getElementById("latestLink").textContent = "-";
+        }
+      } catch (error) {
+        console.error("Latest exam error:", error);
+        document.getElementById("latestTitle").textContent = "Server error";
+        document.getElementById("latestLink").textContent = "Could not load latest exam";
+      }
+    }
+
+    async function loadPreviousExams() {
+      try {
+        const response = await fetch("/all-exam-links");
+        const data = await response.json();
+
+        const listBox = document.getElementById("previousExamsList");
+
+        if (!data.success || !data.exams || data.exams.length === 0) {
+          listBox.innerHTML = "<p class='muted'>No exams found</p>";
+          return;
+        }
+
+        if (data.exams.length === 1) {
+          listBox.innerHTML = "<p class='muted'>No previous exams found</p>";
+          return;
+        }
+
+        let html = "";
+
+        data.exams.slice(1).forEach((exam, index) => {
+          html += `
+            <div class="exam-item">
+              <p><strong>${index + 1}. ${exam.exam_title || "Untitled Exam"}</strong></p>
+              <p><a href="${exam.exam_link}" target="_blank">Open Exam</a></p>
+              <p><small>${exam.created_at ? new Date(exam.created_at).toLocaleString() : ""}</small></p>
+            </div>
+          `;
+        });
+
+        listBox.innerHTML = html;
+      } catch (error) {
+        console.error("Previous exams error:", error);
+        document.getElementById("previousExamsList").innerHTML = "<p class='error'>Error loading exams</p>";
+      }
+    }
+
+    saveExamBtn.addEventListener("click", saveExam);
+
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+      window.location.href = "admin-login.html";
+    });
+
+    loadLatestExam();
+    loadPreviousExams();
+  </script>
+</body>
+</html>

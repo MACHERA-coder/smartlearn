@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLearn Login Portal</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg-1:#04142e;
+      --bg-2:#0a2f73;
+      --bg-3:#1160d9;
+      --card:#ffffff;
+      --glass:rgba(255,255,255,0.10);
+      --glass-2:rgba(255,255,255,0.16);
+      --border:rgba(255,255,255,0.18);
+      --text:#ffffff;
+      --text-soft:#dbeafe;
+      --dark:#0f172a;
+      --primary:#2563eb;
+      --primary-2:#60a5fa;
+      --success-bg:rgba(34,197,94,0.14);
+      --success-border:rgba(74,222,128,0.4);
+      --error-bg:rgba(239,68,68,0.14);
+      --error-border:rgba(248,113,113,0.45);
+      --shadow:0 25px 60px rgba(0,0,0,0.28);
+    }
+
+    body{
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
+        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
+        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      overflow-x:hidden;
+      padding:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .page{
+      width:100%;
+      max-width:1240px;
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap:28px;
+      align-items:stretch;
+    }
+
+    .left-panel{
+      position:relative;
+      border:1px solid var(--border);
+      border-radius:34px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+      backdrop-filter: blur(18px);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      padding:42px 40px;
+      min-height:720px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .left-panel::before{
+      content:"";
+      position:absolute;
+      width:300px;
+      height:300px;
+      border-radius:50%;
+      top:-80px;
+      right:-80px;
+      background:rgba(255,255,255,0.08);
+    }
+
+    .left-panel::after{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      bottom:-70px;
+      left:-50px;
+      background:rgba(255,255,255,0.07);
+    }
+
+    .left-content,
+    .left-bottom{
+      position:relative;
+      z-index:2;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:34px;
+    }
+
+    .brand-icon{
+      width:78px;
+      height:78px;
+      border-radius:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:36px;
+      font-weight:800;
+      background:linear-gradient(135deg, #7dd3fc, #2563eb);
+      box-shadow:0 18px 35px rgba(37,99,235,0.35);
+    }
+
+    .brand-text h1{
+      font-size:36px;
+      line-height:1.1;
+      margin-bottom:6px;
+      font-weight:800;
+      letter-spacing:0.2px;
+    }
+
+    .brand-text p{
+      font-size:15px;
+      color:var(--text-soft);
+    }
+
+    .hero-badge{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.14);
+      color:#e0f2fe;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:18px;
+    }
+
+    .hero h2{
+      font-size:50px;
+      line-height:1.08;
+      margin-bottom:18px;
+      max-width:680px;
+      font-weight:800;
+    }
+
+    .hero p{
+      max-width:600px;
+      color:var(--text-soft);
+      font-size:17px;
+      line-height:1.8;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-top:30px;
+      max-width:700px;
+    }
+
+    .hero-card{
+      background:rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:22px;
+      padding:20px;
+    }
+
+    .hero-card strong{
+      display:block;
+      font-size:17px;
+      margin-bottom:8px;
+    }
+
+    .hero-card span{
+      color:var(--text-soft);
+      font-size:14px;
+      line-height:1.65;
+    }
+
+    .trust-row{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+      margin-top:26px;
+    }
+
+    .trust-box{
+      background:rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:20px;
+      padding:18px;
+      text-align:center;
+    }
+
+    .trust-box strong{
+      display:block;
+      font-size:25px;
+      margin-bottom:5px;
+      font-weight:800;
+    }
+
+    .trust-box span{
+      font-size:13px;
+      color:var(--text-soft);
+    }
+
+    .right-panel{
+      border:1px solid rgba(255,255,255,0.16);
+      border-radius:34px;
+      background:rgba(255,255,255,0.14);
+      backdrop-filter: blur(18px);
+      box-shadow:var(--shadow);
+      padding:34px 30px;
+      min-height:720px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .right-panel::before{
+      content:"";
+      position:absolute;
+      inset:auto -60px -60px auto;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.08);
+    }
+
+    .right-content{
+      position:relative;
+      z-index:2;
+    }
+
+    .login-top{
+      margin-bottom:26px;
+    }
+
+    .login-top .mini-badge{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.14);
+      color:#e0f2fe;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:16px;
+      letter-spacing:0.2px;
+    }
+
+    .login-top h3{
+      font-size:34px;
+      margin-bottom:10px;
+      font-weight:800;
+    }
+
+    .login-top p{
+      color:var(--text-soft);
+      font-size:15px;
+      line-height:1.7;
+    }
+
+    .form-group{
+      margin-bottom:18px;
+    }
+
+    .form-group label{
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin-bottom:9px;
+      color:#eff6ff;
+    }
+
+    .input-wrap{
+      position:relative;
+    }
+
+    .input-wrap input{
+      width:100%;
+      padding:16px 18px;
+      border:none;
+      outline:none;
+      border-radius:18px;
+      background:rgba(255,255,255,0.94);
+      color:var(--dark);
+      font-size:15px;
+      box-shadow:inset 0 0 0 1px rgba(148,163,184,0.18);
+      transition:all 0.18s ease;
+    }
+
+    .input-wrap input:focus{
+      box-shadow:inset 0 0 0 2px rgba(37,99,235,0.35);
+      transform:translateY(-1px);
+    }
+
+    .toggle-password{
+      position:absolute;
+      top:50%;
+      right:14px;
+      transform:translateY(-50%);
+      border:none;
+      background:transparent;
+      color:#475569;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:800;
+      padding:5px 8px;
+    }
+
+    .helper-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin:8px 0 20px;
+      flex-wrap:wrap;
+    }
+
+    .helper-left{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#e0f2fe;
+      font-size:13px;
+    }
+
+    .helper-right{
+      text-decoration:none;
+      color:#dbeafe;
+      font-size:13px;
+      font-weight:700;
+    }
+
+    .login-btn{
+      width:100%;
+      border:none;
+      border-radius:20px;
+      padding:17px 18px;
+      cursor:pointer;
+      background:linear-gradient(90deg, var(--primary-2), var(--primary));
+      color:#fff;
+      font-size:18px;
+      font-weight:800;
+      box-shadow:0 15px 28px rgba(37,99,235,0.34);
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .login-btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 18px 32px rgba(37,99,235,0.4);
+    }
+
+    .message{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      font-size:14px;
+      font-weight:700;
+      display:none;
+      line-height:1.6;
+    }
+
+    .message.error{
+      display:block;
+      background:var(--error-bg);
+      border:1px solid var(--error-border);
+      color:#ffe4e6;
+    }
+
+    .message.success{
+      display:block;
+      background:var(--success-bg);
+      border:1px solid var(--success-border);
+      color:#dcfce7;
+    }
+
+    .divider{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      margin:24px 0 18px;
+      color:#dbeafe;
+      font-size:13px;
+    }
+
+    .divider::before,
+    .divider::after{
+      content:"";
+      height:1px;
+      flex:1;
+      background:rgba(255,255,255,0.18);
+    }
+
+    .portal-grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .portal-box{
+      background:rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:18px;
+      padding:15px 16px;
+    }
+
+    .portal-box strong{
+      display:block;
+      font-size:14px;
+      margin-bottom:6px;
+    }
+
+    .portal-box span{
+      color:#dbeafe;
+      font-size:13px;
+      line-height:1.65;
+    }
+
+    .bottom-links{
+      margin-top:22px;
+      text-align:center;
+      font-size:14px;
+      color:var(--text-soft);
+      line-height:1.8;
+    }
+
+    .bottom-links a{
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    @media (max-width: 1020px){
+      .page{
+        grid-template-columns:1fr;
+      }
+
+      .left-panel,
+      .right-panel{
+        min-height:auto;
+      }
+
+      .hero h2{
+        font-size:40px;
+      }
+    }
+
+    @media (max-width: 680px){
+      body{
+        padding:16px;
+      }
+
+      .left-panel,
+      .right-panel{
+        padding:24px 20px;
+        border-radius:24px;
+      }
+
+      .hero h2{
+        font-size:30px;
+      }
+
+      .login-top h3{
+        font-size:28px;
+      }
+
+      .hero-grid{
+        grid-template-columns:1fr;
+      }
+
+      .trust-row{
+        grid-template-columns:1fr;
+      }
+
+      .brand-text h1{
+        font-size:30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="left-panel">
+      <div class="left-content">
+        <div class="brand">
+          <div class="brand-icon">S</div>
+          <div class="brand-text">
+            <h1>SmartLearn</h1>
+            <p>Corporate Learning & Examination Platform</p>
+          </div>
+        </div>
+
+        <div class="hero">
+          <div class="hero-badge">Premium Medical Examination Platform</div>
+          <h2>Professional Real cases medical exams for Medical students with Affordable subscription packages.</h2>
+          <p>
+            SmartLearn is built to present your education business in a modern and premium way — combining student login, subscriptions, secure payments and exam access inside one polished platform.
+          </p>
+        </div>
+
+        <div class="hero-grid">
+          <div class="hero-card">
+            <strong>Business Presentation</strong>
+            <span>Your website feels clean, premium and trustworthy for students, parents and institutions.</span>
+          </div>
+          <div class="hero-card">
+            <strong>Modern Student Experience</strong>
+            <span>Students get a smooth path from login to subscription, payment and exam access.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-bottom">
+        <div class="trust-row">
+          <div class="trust-box">
+            <strong>Secure</strong>
+            <span>Login Flow</span>
+          </div>
+          <div class="trust-box">
+            <strong>Fast</strong>
+            <span>Portal Access</span>
+          </div>
+          <div class="trust-box">
+            <strong>Premium</strong>
+            <span>Business Feel</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="right-panel">
+      <div class="right-content">
+        <div class="login-top">
+          <div class="mini-badge">SmartLearn Secure Portal</div>
+          <h3>Welcome Back</h3>
+          <p>Sign in to continue to the student dashboard or admin control panel.</p>
+        </div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <div class="input-wrap">
+              <input type="email" id="email" placeholder="Enter your email address" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <input type="password" id="password" placeholder="Enter your password" required />
+              <button type="button" class="toggle-password" id="togglePassword">Show</button>
+            </div>
+          </div>
+
+          <div class="helper-row">
+            <label class="helper-left">
+              <input type="checkbox" />
+              <span>Keep me signed in</span>
+            </label>
+            <a href="#" class="helper-right">Protected Access</a>
+          </div>
+
+          <button type="submit" class="login-btn">Login Now</button>
+          <div id="messageBox" class="message"></div>
+        </form>
+
+        <div class="divider">Portal Access</div>
+
+        <div class="portal-grid">
+          <div class="portal-box">
+            <strong>Student Portal</strong>
+            <span>Access dashboard details, choose your package, complete payment and unlock exam access.</span>
+          </div>
+          <div class="portal-box">
+            <strong>Admin Control</strong>
+            <span>Manage students, subscriptions, payments, exams and business analytics from one dashboard.</span>
+          </div>
+        </div>
+
+        <div class="bottom-links">
+          Don't have an account? <a href="/register.html">Register here</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const messageBox = document.getElementById("messageBox");
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        togglePassword.textContent = "Hide";
+      } else {
+        passwordInput.type = "password";
+        togglePassword.textContent = "Show";
+      }
+    });
+
+    function showMessage(text, type) {
+      messageBox.className = `message ${type}`;
+      messageBox.textContent = text;
+    }
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      showMessage("Logging in...", "success");
+
+      try {
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          if (data.role === "student" && data.student) {
+            localStorage.setItem("studentId", data.student.studentId || "");
+            localStorage.setItem("studentName", data.student.name || "");
+            localStorage.setItem("studentEmail", data.student.email || "");
+            localStorage.setItem("studentSubscriptionStatus", data.student.subscriptionStatus || "inactive");
+            localStorage.setItem("studentPackageName", data.student.packageName || "");
+          }
+
+          showMessage(data.message || "Login successful", "success");
+
+          setTimeout(() => {
+            window.location.href = data.redirect;
+          }, 800);
+        } else {
+          showMessage(data.message || "Login failed", "error");
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        showMessage("Server error. Please try again.", "error");
+      }
+    });
+  </script>
+</body>
+</html>

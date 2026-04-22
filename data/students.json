@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "fullName": "Stephano Machera",
+    "studentId": "ST2026001",
+    "phone": "0712345678",
+    "email": "student@example.com",
+    "password": "123456"
+  },
+  {
+    "id": 2,
+    "fullName": "Adriel Adrian Machera",
+    "studentId": "ST2026002",
+    "phone": "0744001122",
+    "email": "adriel@example.com",
+    "password": "123456"
+  },
+  {
+    "id": 3,
+    "fullName": "STEPHANO MACHERA",
+    "studentId": "KTV2026001",
+    "phone": "255710409894",
+    "region": "Katavi",
+    "email": "macherastephano@gmail.com",
+    "password": "12345",
+    "subscription": {
+      "status": "active",
+      "planId": "standard",
+      "planName": "Standard Plan",
+      "price": 10000,
+      "startDate": "2026-04-21",
+      "expiryDate": "2026-05-21",
+      "daysRemaining": 30
+    }
+  },
+  {
+    "id": 4,
+    "fullName": "STEPHANO MACHERA",
+    "studentId": "KLM2026001",
+    "phone": "255715636373",
+    "region": "Kilimanjaro",
+    "email": "vistensamedicalservices@gmail.com",
+    "password": "12345",
+    "subscription": {
+      "status": "active",
+      "planId": "basic",
+      "planName": "Basic Plan",
+      "price": 5000,
+      "startDate": "2026-04-21",
+      "expiryDate": "2026-05-21",
+      "daysRemaining": 30
+    }
+  }
+]

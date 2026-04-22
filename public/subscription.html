@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLearn Subscription Packages</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg-1:#04142e;
+      --bg-2:#0a2f73;
+      --bg-3:#1160d9;
+      --text:#ffffff;
+      --text-soft:#dbeafe;
+      --dark:#0f172a;
+      --white:#ffffff;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --primary-2:#60a5fa;
+      --success:#16a34a;
+      --success-bg:#dcfce7;
+      --warning:#92400e;
+      --warning-bg:#fef3c7;
+      --shadow:0 20px 50px rgba(15,23,42,0.12);
+    }
+
+    body{
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
+        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
+        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      overflow-x:hidden;
+      padding:22px;
+    }
+
+    .container{
+      max-width:1280px;
+      margin:0 auto;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .brand h1{
+      font-size:30px;
+      margin-bottom:4px;
+      font-weight:800;
+    }
+
+    .brand p{
+      color:var(--text-soft);
+      font-size:14px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .top-btn{
+      text-decoration:none;
+      padding:12px 16px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:14px;
+      color:#fff;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.14);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:20px;
+      margin-bottom:22px;
+    }
+
+    .hero-left{
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      padding:32px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.16);
+      box-shadow:0 24px 60px rgba(0,0,0,0.18);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-left::before{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      top:-70px;
+      right:-60px;
+      background:rgba(255,255,255,0.08);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.12);
+      font-size:13px;
+      font-weight:700;
+      color:#e0f2fe;
+      margin-bottom:18px;
+    }
+
+    .hero-left h2{
+      font-size:40px;
+      line-height:1.1;
+      margin-bottom:14px;
+      font-weight:800;
+      max-width:700px;
+    }
+
+    .hero-left p{
+      font-size:16px;
+      line-height:1.8;
+      color:var(--text-soft);
+      max-width:700px;
+    }
+
+    .hero-right{
+      display:grid;
+      gap:16px;
+    }
+
+    .mini-card{
+      background:#ffffff;
+      color:var(--dark);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.9);
+    }
+
+    .mini-card small{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .mini-card strong{
+      font-size:18px;
+      display:block;
+      line-height:1.5;
+    }
+
+    .status-pill{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+      margin-top:8px;
+    }
+
+    .status-active{
+      background:var(--success-bg);
+      color:var(--success);
+    }
+
+    .status-inactive{
+      background:var(--warning-bg);
+      color:var(--warning);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(290px, 1fr));
+      gap:22px;
+    }
+
+    .package-card{
+      background:#ffffff;
+      color:var(--dark);
+      border-radius:26px;
+      padding:28px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.95);
+      display:flex;
+      flex-direction:column;
+      min-height:420px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .package-card.popular::before{
+      content:"Popular";
+      position:absolute;
+      top:18px;
+      right:-34px;
+      background:linear-gradient(90deg, var(--primary-2), var(--primary));
+      color:#fff;
+      font-size:12px;
+      font-weight:800;
+      padding:8px 40px;
+      transform:rotate(35deg);
+    }
+
+    .package-card.current-plan{
+      outline:4px solid rgba(96,165,250,.28);
+    }
+
+    .plan-badge{
+      position:absolute;
+      top:16px;
+      right:16px;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .plan-badge.current{
+      background:#dcfce7;
+      color:#166534;
+    }
+
+    .plan-badge.upgrade{
+      background:#dbeafe;
+      color:#1d4ed8;
+    }
+
+    .package-card h3{
+      font-size:24px;
+      margin-bottom:18px;
+      font-weight:800;
+    }
+
+    .price{
+      font-size:30px;
+      font-weight:800;
+      color:#1d4ed8;
+      margin-bottom:8px;
+    }
+
+    .period{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:18px;
+      font-weight:700;
+    }
+
+    .desc{
+      color:#475569;
+      font-size:15px;
+      line-height:1.8;
+      margin-bottom:18px;
+      min-height:54px;
+    }
+
+    .feature-list{
+      display:grid;
+      gap:10px;
+      margin-bottom:24px;
+      flex:1;
+    }
+
+    .feature-item{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:14px;
+      padding:12px 14px;
+      font-size:14px;
+      color:#334155;
+      font-weight:700;
+    }
+
+    .choose-btn{
+      width:100%;
+      border:none;
+      border-radius:18px;
+      padding:15px 18px;
+      cursor:pointer;
+      background:linear-gradient(90deg, var(--primary-2), var(--primary));
+      color:#fff;
+      font-size:17px;
+      font-weight:800;
+      box-shadow:0 14px 28px rgba(37,99,235,0.28);
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .choose-btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 18px 32px rgba(37,99,235,0.36);
+    }
+
+    .choose-btn.subscribed{
+      background:#dcfce7;
+      color:#166534;
+      cursor:default;
+      box-shadow:none;
+    }
+
+    .message{
+      margin-top:18px;
+      padding:14px 16px;
+      border-radius:16px;
+      font-size:14px;
+      font-weight:700;
+      display:none;
+      line-height:1.6;
+    }
+
+    .message.success{
+      display:block;
+      background:#dcfce7;
+      color:#166534;
+      border:1px solid #86efac;
+    }
+
+    .message.error{
+      display:block;
+      background:#fee2e2;
+      color:#991b1b;
+      border:1px solid #fca5a5;
+    }
+
+    @media (max-width: 980px){
+      .hero{
+        grid-template-columns:1fr;
+      }
+
+      .hero-left h2{
+        font-size:32px;
+      }
+    }
+
+    @media (max-width: 680px){
+      body{
+        padding:16px;
+      }
+
+      .hero-left{
+        padding:24px 20px;
+      }
+
+      .hero-left h2{
+        font-size:28px;
+      }
+
+      .package-card{
+        min-height:auto;
+        padding:22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <h1>SmartLearn Subscription Packages</h1>
+        <p>Select a package and continue to payment activation.</p>
+      </div>
+
+      <div class="top-actions">
+        <a href="/student-dashboard" class="top-btn">Back to Dashboard</a>
+        <a href="/exam-access.html" class="top-btn">Exam Access</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-left">
+        <div class="badge">SmartLearn Subscription Center</div>
+        <h2 id="studentNameHeading">Choose the package that matches your budget and learning plan.</h2>
+        <p>
+          Select a subscription package below. After choosing your package, you will continue directly to the payment page to activate your account.
+        </p>
+      </div>
+
+      <div class="hero-right">
+        <div class="mini-card">
+          <small>Student ID</small>
+          <strong id="studentIdText">-</strong>
+        </div>
+
+        <div class="mini-card">
+          <small>Current Package</small>
+          <strong id="currentPackageText">No package selected</strong>
+        </div>
+
+        <div class="mini-card">
+          <small>Subscription Status</small>
+          <strong id="subscriptionText">Inactive</strong>
+          <div id="statusBadge" class="status-pill status-inactive">Inactive</div>
+        </div>
+      </div>
+    </section>
+
+    <div id="messageBox" class="message"></div>
+
+    <section class="grid" id="packagesGrid"></section>
+  </div>
+
+  <script>
+    const studentId = localStorage.getItem("studentId");
+    const studentName = localStorage.getItem("studentName");
+    const studentEmail = localStorage.getItem("studentEmail");
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (!studentId || !studentEmail) {
+      window.location.href = "/login";
+    }
+
+    const selectedPackageCode = (urlParams.get("package") || "").trim();
+    const selectedPackageName = (urlParams.get("name") || "").trim();
+    const selectedPackagePrice = (urlParams.get("price") || "").trim();
+    const selectedPackagePeriod = (urlParams.get("period") || "").trim();
+
+    if (selectedPackageCode && selectedPackageName && selectedPackagePrice && selectedPackagePeriod) {
+      window.location.replace(
+        `/payment.html?package=${encodeURIComponent(selectedPackageCode)}&name=${encodeURIComponent(selectedPackageName)}&price=${encodeURIComponent(selectedPackagePrice)}&period=${encodeURIComponent(selectedPackagePeriod)}`
+      );
+    }
+
+    const studentNameHeading = document.getElementById("studentNameHeading");
+    const studentIdText = document.getElementById("studentIdText");
+    const currentPackageText = document.getElementById("currentPackageText");
+    const subscriptionText = document.getElementById("subscriptionText");
+    const statusBadge = document.getElementById("statusBadge");
+    const packagesGrid = document.getElementById("packagesGrid");
+    const messageBox = document.getElementById("messageBox");
+
+    function showMessage(text, type) {
+      messageBox.className = `message ${type}`;
+      messageBox.textContent = text;
+    }
+
+    function paintStatus(status) {
+      const value = (status || "inactive").toLowerCase();
+      subscriptionText.textContent = value === "active" ? "Active" : "Inactive";
+      statusBadge.textContent = value === "active" ? "Active" : "Inactive";
+      statusBadge.classList.remove("status-active", "status-inactive");
+      statusBadge.classList.add(value === "active" ? "status-active" : "status-inactive");
+    }
+
+    async function loadProfile() {
+      const response = await fetch(`/api/student/profile/${studentId}`);
+      const data = await response.json();
+
+      if (!data.success) {
+        window.location.href = "/login";
+        return null;
+      }
+
+      const student = data.student;
+      studentNameHeading.textContent = `${student.name}, choose the package that matches your budget and learning plan.`;
+      studentIdText.textContent = student.studentId || "-";
+      currentPackageText.textContent = student.packageName || "No package selected";
+      paintStatus(student.subscriptionStatus);
+
+      localStorage.setItem("studentSubscriptionStatus", student.subscriptionStatus || "inactive");
+      localStorage.setItem("studentPackageName", student.packageName || "");
+
+      return student;
+    }
+
+    function createFeatureList(pkg) {
+      const features = [
+        `${pkg.period} access`,
+        `Package: ${pkg.name}`,
+        `Secure activation flow`
+      ];
+
+      return features.map(item => `<div class="feature-item">${item}</div>`).join("");
+    }
+
+    function getButtonState(pkg, currentPackageName, currentSubscriptionStatus) {
+      const hasActivePlan = currentSubscriptionStatus === "active" && currentPackageName;
+
+      if (!hasActivePlan) {
+        return {
+          label: "Choose Package",
+          className: "",
+          disabled: false,
+          badge: ""
+        };
+      }
+
+      if (currentPackageName.toLowerCase() === pkg.name.toLowerCase()) {
+        return {
+          label: "Subscribed",
+          className: "subscribed",
+          disabled: true,
+          badge: '<div class="plan-badge current">Current Plan</div>'
+        };
+      }
+
+      return {
+        label: "Upgrade",
+        className: "",
+        disabled: false,
+        badge: '<div class="plan-badge upgrade">Upgrade Option</div>'
+      };
+    }
+
+    async function loadPackages(student) {
+      try {
+        const response = await fetch("/api/packages");
+        const data = await response.json();
+
+        packagesGrid.innerHTML = "";
+
+        if (!data.success || !Array.isArray(data.packages) || data.packages.length === 0) {
+          showMessage("No packages available at the moment.", "error");
+          return;
+        }
+
+        data.packages.forEach((pkg, index) => {
+          const state = getButtonState(
+            pkg,
+            (student.packageName || "").trim(),
+            (student.subscriptionStatus || "inactive").trim().toLowerCase()
+          );
+
+          const isCurrent = state.label === "Subscribed";
+
+          const card = document.createElement("div");
+          card.className = "package-card" + (index === 1 ? " popular" : "") + (isCurrent ? " current-plan" : "");
+
+          card.innerHTML = `
+            ${state.badge}
+            <h3>${pkg.name}</h3>
+            <div class="price">TZS ${Number(pkg.price || 0).toLocaleString()}</div>
+            <div class="period">${pkg.period || "Monthly"}</div>
+            <div class="desc">${pkg.description || ""}</div>
+            <div class="feature-list">${createFeatureList(pkg)}</div>
+            <button class="choose-btn ${state.className}" ${state.disabled ? "disabled" : ""}>
+              ${state.label}
+            </button>
+          `;
+
+          const button = card.querySelector(".choose-btn");
+
+          if (!state.disabled) {
+            button.addEventListener("click", () => {
+              window.location.href =
+                `/payment.html?package=${encodeURIComponent(pkg.code)}&name=${encodeURIComponent(pkg.name)}&price=${encodeURIComponent(pkg.price)}&period=${encodeURIComponent(pkg.period || "Monthly")}`;
+            });
+          }
+
+          packagesGrid.appendChild(card);
+        });
+      } catch (error) {
+        showMessage("Failed to load packages.", "error");
+      }
+    }
+
+    async function init() {
+      const student = await loadProfile();
+      if (student) {
+        await loadPackages(student);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

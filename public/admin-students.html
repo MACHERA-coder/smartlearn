@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Students</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <h2>ADMIN</h2>
+        <p>Control Panel</p>
+      </div>
+
+  <nav class="sidebar-menu">
+  <a href="admin-dashboard.html">Dashboard</a>
+  <a href="admin-students.html" class="active">Students</a>
+  <a href="#">Questions</a>
+  <a href="admin-exams.html">Exams</a>
+  <a href="#">Results</a>
+  <a href="#">Payments</a>
+</nav>
+      <button id="logoutBtn" class="sidebar-logout">Logout</button>
+    </aside>
+
+    <main class="main-content">
+      <div class="topbar">
+        <div>
+          <h1>Registered Students</h1>
+          <p>All students from the database</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <tr>
+                <td colspan="4">Loading students...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+    if (localStorage.getItem("admin") !== "true") {
+      window.location.href = "admin-login.html";
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+      localStorage.removeItem("admin");
+      window.location.href = "admin-login.html";
+    });
+
+    async function loadStudents() {
+      const tableBody = document.getElementById("studentsTableBody");
+
+      try {
+        const response = await fetch("/students");
+        const data = await response.json();
+
+        if (!data.success || data.students.length === 0) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="4">No students found</td>
+            </tr>
+          `;
+          return;
+        }
+
+        tableBody.innerHTML = "";
+
+        data.students.forEach(student => {
+          const row = `
+            <tr>
+              <td>${student.id}</td>
+              <td>${student.fullname}</td>
+              <td>${student.email}</td>
+              <td>${student.created_at}</td>
+            </tr>
+          `;
+          tableBody.innerHTML += row;
+        });
+      } catch (error) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="4">Error loading students</td>
+          </tr>
+        `;
+      }
+    }
+
+    loadStudents();
+  </script>
+
+</body>
+</html>

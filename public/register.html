@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLearn Registration Portal</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg-1:#04142e;
+      --bg-2:#0a2f73;
+      --bg-3:#1160d9;
+      --text:#ffffff;
+      --text-soft:#dbeafe;
+      --glass:rgba(255,255,255,0.10);
+      --glass-2:rgba(255,255,255,0.16);
+      --border:rgba(255,255,255,0.18);
+      --dark:#0f172a;
+      --primary:#2563eb;
+      --primary-2:#60a5fa;
+      --success-bg:rgba(34,197,94,0.14);
+      --success-border:rgba(74,222,128,0.4);
+      --error-bg:rgba(239,68,68,0.14);
+      --error-border:rgba(248,113,113,0.45);
+      --shadow:0 25px 60px rgba(0,0,0,0.28);
+    }
+
+    body{
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
+        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
+        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      overflow-x:hidden;
+      padding:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .page{
+      width:100%;
+      max-width:1280px;
+      display:grid;
+      grid-template-columns: 1.04fr 0.96fr;
+      gap:28px;
+      align-items:stretch;
+    }
+
+    .left-panel{
+      position:relative;
+      border:1px solid var(--border);
+      border-radius:34px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
+      backdrop-filter: blur(18px);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      padding:42px 40px;
+      min-height:760px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .left-panel::before{
+      content:"";
+      position:absolute;
+      width:300px;
+      height:300px;
+      border-radius:50%;
+      top:-80px;
+      right:-80px;
+      background:rgba(255,255,255,0.08);
+    }
+
+    .left-panel::after{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      bottom:-70px;
+      left:-50px;
+      background:rgba(255,255,255,0.07);
+    }
+
+    .left-content,
+    .left-bottom{
+      position:relative;
+      z-index:2;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:34px;
+    }
+
+    .brand-icon{
+      width:78px;
+      height:78px;
+      border-radius:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:36px;
+      font-weight:800;
+      background:linear-gradient(135deg, #7dd3fc, #2563eb);
+      box-shadow:0 18px 35px rgba(37,99,235,0.35);
+    }
+
+    .brand-text h1{
+      font-size:36px;
+      line-height:1.1;
+      margin-bottom:6px;
+      font-weight:800;
+      letter-spacing:0.2px;
+    }
+
+    .brand-text p{
+      font-size:15px;
+      color:var(--text-soft);
+    }
+
+    .hero-badge{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.14);
+      color:#e0f2fe;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:18px;
+    }
+
+    .hero h2{
+      font-size:46px;
+      line-height:1.1;
+      margin-bottom:18px;
+      max-width:680px;
+      font-weight:800;
+    }
+
+    .hero p{
+      max-width:620px;
+      color:var(--text-soft);
+      font-size:17px;
+      line-height:1.8;
+    }
+
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      margin-top:30px;
+      max-width:720px;
+    }
+
+    .hero-card{
+      background:rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:22px;
+      padding:20px;
+    }
+
+    .hero-card strong{
+      display:block;
+      font-size:17px;
+      margin-bottom:8px;
+    }
+
+    .hero-card span{
+      color:var(--text-soft);
+      font-size:14px;
+      line-height:1.65;
+    }
+
+    .steps-row{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+      margin-top:26px;
+    }
+
+    .step-box{
+      background:rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:20px;
+      padding:18px;
+      text-align:center;
+    }
+
+    .step-number{
+      width:38px;
+      height:38px;
+      margin:0 auto 10px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,0.16);
+      font-size:14px;
+      font-weight:800;
+    }
+
+    .step-box strong{
+      display:block;
+      font-size:15px;
+      margin-bottom:5px;
+    }
+
+    .step-box span{
+      font-size:13px;
+      color:var(--text-soft);
+      line-height:1.55;
+    }
+
+    .right-panel{
+      border:1px solid rgba(255,255,255,0.16);
+      border-radius:34px;
+      background:rgba(255,255,255,0.14);
+      backdrop-filter: blur(18px);
+      box-shadow:var(--shadow);
+      padding:34px 30px;
+      min-height:760px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .right-panel::before{
+      content:"";
+      position:absolute;
+      inset:auto -60px -60px auto;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:rgba(255,255,255,0.08);
+    }
+
+    .right-content{
+      position:relative;
+      z-index:2;
+    }
+
+    .register-top{
+      margin-bottom:24px;
+    }
+
+    .register-top .mini-badge{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.14);
+      color:#e0f2fe;
+      font-size:12px;
+      font-weight:800;
+      margin-bottom:16px;
+      letter-spacing:0.2px;
+    }
+
+    .register-top h3{
+      font-size:34px;
+      margin-bottom:10px;
+      font-weight:800;
+    }
+
+    .register-top p{
+      color:var(--text-soft);
+      font-size:15px;
+      line-height:1.7;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .form-group{
+      margin-bottom:16px;
+    }
+
+    .form-group.full{
+      grid-column:1 / -1;
+    }
+
+    .form-group label{
+      display:block;
+      font-size:14px;
+      font-weight:700;
+      margin-bottom:9px;
+      color:#eff6ff;
+    }
+
+    .input-wrap{
+      position:relative;
+    }
+
+    .input-wrap input,
+    .input-wrap select{
+      width:100%;
+      padding:16px 18px;
+      border:none;
+      outline:none;
+      border-radius:18px;
+      background:rgba(255,255,255,0.94);
+      color:var(--dark);
+      font-size:15px;
+      box-shadow:inset 0 0 0 1px rgba(148,163,184,0.18);
+      transition:all 0.18s ease;
+    }
+
+    .input-wrap input:focus,
+    .input-wrap select:focus{
+      box-shadow:inset 0 0 0 2px rgba(37,99,235,0.35);
+      transform:translateY(-1px);
+    }
+
+    .toggle-password{
+      position:absolute;
+      top:50%;
+      right:14px;
+      transform:translateY(-50%);
+      border:none;
+      background:transparent;
+      color:#475569;
+      cursor:pointer;
+      font-size:12px;
+      font-weight:800;
+      padding:5px 8px;
+    }
+
+    .register-btn{
+      width:100%;
+      border:none;
+      border-radius:20px;
+      padding:17px 18px;
+      cursor:pointer;
+      background:linear-gradient(90deg, var(--primary-2), var(--primary));
+      color:#fff;
+      font-size:18px;
+      font-weight:800;
+      box-shadow:0 15px 28px rgba(37,99,235,0.34);
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
+      margin-top:4px;
+    }
+
+    .register-btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 18px 32px rgba(37,99,235,0.4);
+    }
+
+    .message{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      font-size:14px;
+      font-weight:700;
+      display:none;
+      line-height:1.6;
+    }
+
+    .message.error{
+      display:block;
+      background:var(--error-bg);
+      border:1px solid var(--error-border);
+      color:#ffe4e6;
+    }
+
+    .message.success{
+      display:block;
+      background:var(--success-bg);
+      border:1px solid var(--success-border);
+      color:#dcfce7;
+    }
+
+    .note{
+      margin-top:18px;
+      background:rgba(255,255,255,0.10);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:18px;
+      padding:16px;
+      color:#dbeafe;
+      font-size:13px;
+      line-height:1.7;
+    }
+
+    .bottom-links{
+      margin-top:18px;
+      text-align:center;
+      font-size:14px;
+      color:var(--text-soft);
+      line-height:2;
+    }
+
+    .bottom-links a{
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+    }
+
+    @media (max-width: 1080px){
+      .page{
+        grid-template-columns:1fr;
+      }
+
+      .left-panel,
+      .right-panel{
+        min-height:auto;
+      }
+
+      .hero h2{
+        font-size:38px;
+      }
+    }
+
+    @media (max-width: 760px){
+      body{
+        padding:16px;
+      }
+
+      .left-panel,
+      .right-panel{
+        padding:24px 20px;
+        border-radius:24px;
+      }
+
+      .hero h2{
+        font-size:30px;
+      }
+
+      .register-top h3{
+        font-size:28px;
+      }
+
+      .hero-grid{
+        grid-template-columns:1fr;
+      }
+
+      .steps-row{
+        grid-template-columns:1fr;
+      }
+
+      .form-grid{
+        grid-template-columns:1fr;
+      }
+
+      .brand-text h1{
+        font-size:30px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <section class="left-panel">
+      <div class="left-content">
+        <div class="brand">
+          <div class="brand-icon">S</div>
+          <div class="brand-text">
+            <h1>SmartLearn</h1>
+            <p>Corporate Learning & Examination Platform</p>
+          </div>
+        </div>
+
+        <div class="hero">
+          <div class="hero-badge">Premium Student Registration Experience</div>
+          <h2>Create your student account and unlock smart learning today.</h2>
+          <p>
+            Register once and get access to your SmartLearn student profile, subscription choices, payment flow and exam access in one professional learning platform.
+          </p>
+        </div>
+
+        <div class="hero-grid">
+          <div class="hero-card">
+            <strong>Automatic Student ID</strong>
+            <span>Your student ID is generated automatically based on your selected region for easier management.</span>
+          </div>
+          <div class="hero-card">
+            <strong>Fast Onboarding</strong>
+            <span>Move from registration to login, subscription and payment through a clean step-by-step flow.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-bottom">
+        <div class="steps-row">
+          <div class="step-box">
+            <div class="step-number">1</div>
+            <strong>Create Account</strong>
+            <span>Enter your details to open your student profile.</span>
+          </div>
+          <div class="step-box">
+            <div class="step-number">2</div>
+            <strong>Choose Package</strong>
+            <span>Select the subscription plan that matches your needs.</span>
+          </div>
+          <div class="step-box">
+            <div class="step-number">3</div>
+            <strong>Access Learning</strong>
+            <span>Complete payment and unlock the exam portal.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="right-panel">
+      <div class="right-content">
+        <div class="register-top">
+          <div class="mini-badge">SmartLearn Student Registration</div>
+          <h3>Create Your Account</h3>
+          <p>Complete the form below to open your SmartLearn student account.</p>
+        </div>
+
+        <form id="registerForm">
+          <div class="form-grid">
+            <div class="form-group full">
+              <label for="fullName">Full Name</label>
+              <div class="input-wrap">
+                <input type="text" id="fullName" placeholder="Enter full name" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <div class="input-wrap">
+                <input type="text" id="phone" placeholder="Enter phone number" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="region">Region</label>
+              <div class="input-wrap">
+                <select id="region" required>
+                  <option value="">Select region</option>
+                  <option value="Kilimanjaro">Kilimanjaro</option>
+                  <option value="Arusha">Arusha</option>
+                  <option value="Dar es Salaam">Dar es Salaam</option>
+                  <option value="Dodoma">Dodoma</option>
+                  <option value="Mwanza">Mwanza</option>
+                  <option value="Mbeya">Mbeya</option>
+                  <option value="Morogoro">Morogoro</option>
+                  <option value="Tanga">Tanga</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group full">
+              <label for="email">Email Address</label>
+              <div class="input-wrap">
+                <input type="email" id="email" placeholder="Enter email address" required />
+              </div>
+            </div>
+
+            <div class="form-group full">
+              <label for="password">Password</label>
+              <div class="input-wrap">
+                <input type="password" id="password" placeholder="Enter password" required />
+                <button type="button" class="toggle-password" id="togglePassword">Show</button>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="register-btn">Create Student Account</button>
+          <div id="messageBox" class="message"></div>
+        </form>
+
+        <div class="note">
+          Full name, phone number, region, email and password are required. Your student ID will be created automatically by the system after successful registration.
+        </div>
+
+        <div class="bottom-links">
+          Already have an account? <a href="/login">Login here</a><br>
+          <a href="/">Back to Home</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const registerForm = document.getElementById("registerForm");
+    const messageBox = document.getElementById("messageBox");
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        togglePassword.textContent = "Hide";
+      } else {
+        passwordInput.type = "password";
+        togglePassword.textContent = "Show";
+      }
+    });
+
+    function showMessage(text, type) {
+      messageBox.className = `message ${type}`;
+      messageBox.textContent = text;
+    }
+
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("fullName").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const region = document.getElementById("region").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      showMessage("Creating account...", "success");
+
+      try {
+        const response = await fetch("/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name,
+            phone,
+            region,
+            email,
+            password
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showMessage(`Registration successful. Student ID: ${data.studentId}`, "success");
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 1200);
+        } else {
+          showMessage(data.message || "Registration failed.", "error");
+        }
+      } catch (error) {
+        console.error("Registration error:", error);
+        showMessage("Server error during registration.", "error");
+      }
+    });
+  </script>
+</body>
+</html>

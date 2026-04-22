@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLearn Student Dashboard</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg-1:#04142e;
+      --bg-2:#0a2f73;
+      --bg-3:#1160d9;
+      --text:#ffffff;
+      --text-soft:#dbeafe;
+      --dark:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --success:#16a34a;
+      --success-bg:#dcfce7;
+      --danger:#dc2626;
+      --danger-bg:#fee2e2;
+      --primary:#2563eb;
+      --primary-2:#60a5fa;
+      --shadow:0 20px 50px rgba(15,23,42,0.12);
+    }
+
+    body{
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
+        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
+        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      overflow-x:hidden;
+      padding:22px;
+    }
+
+    .container{
+      max-width:1280px;
+      margin:0 auto;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .brand-icon{
+      width:62px;
+      height:62px;
+      border-radius:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      font-weight:800;
+      background:linear-gradient(135deg, #7dd3fc, #2563eb);
+      box-shadow:0 14px 30px rgba(37,99,235,0.35);
+    }
+
+    .brand-text h1{
+      font-size:30px;
+      margin-bottom:4px;
+      font-weight:800;
+    }
+
+    .brand-text p{
+      color:var(--text-soft);
+      font-size:14px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .top-btn{
+      text-decoration:none;
+      border:none;
+      cursor:pointer;
+      padding:12px 16px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:14px;
+      color:#fff;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(10px);
+    }
+
+    .top-btn.logout{
+      background:rgba(239,68,68,0.18);
+      border:1px solid rgba(248,113,113,0.28);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.25fr 0.95fr;
+      gap:20px;
+      margin-bottom:22px;
+    }
+
+    .hero-left{
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      padding:32px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.16);
+      box-shadow:0 24px 60px rgba(0,0,0,0.18);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-left::before{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      top:-70px;
+      right:-60px;
+      background:rgba(255,255,255,0.08);
+    }
+
+    .hero-left .badge{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.12);
+      font-size:13px;
+      font-weight:700;
+      color:#e0f2fe;
+      margin-bottom:18px;
+    }
+
+    .hero-left h2{
+      font-size:42px;
+      line-height:1.1;
+      margin-bottom:14px;
+      font-weight:800;
+      max-width:700px;
+    }
+
+    .hero-left p{
+      font-size:16px;
+      line-height:1.8;
+      color:var(--text-soft);
+      max-width:700px;
+      margin-bottom:24px;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .hero-action{
+      text-decoration:none;
+      padding:14px 18px;
+      border-radius:16px;
+      font-weight:800;
+      font-size:15px;
+      display:inline-block;
+      transition:transform 0.18s ease;
+    }
+
+    .hero-action.primary{
+      background:linear-gradient(90deg, var(--primary-2), var(--primary));
+      color:#fff;
+      box-shadow:0 14px 28px rgba(37,99,235,0.34);
+    }
+
+    .hero-action.secondary{
+      background:rgba(255,255,255,0.10);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.16);
+    }
+
+    .hero-action:hover{
+      transform:translateY(-1px);
+    }
+
+    .hero-right{
+      display:grid;
+      gap:16px;
+    }
+
+    .mini-card{
+      background:#ffffff;
+      color:var(--dark);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.9);
+    }
+
+    .mini-card small{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .mini-card strong{
+      font-size:18px;
+      display:block;
+      line-height:1.5;
+    }
+
+    .status-pill{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+      margin-top:8px;
+    }
+
+    .status-active{
+      background:var(--success-bg);
+      color:var(--success);
+    }
+
+    .status-inactive{
+      background:var(--danger-bg);
+      color:var(--danger);
+    }
+
+    .section-grid{
+      display:grid;
+      grid-template-columns:1.2fr 0.8fr;
+      gap:20px;
+    }
+
+    .section-card{
+      background:#ffffff;
+      color:var(--dark);
+      border-radius:24px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.95);
+    }
+
+    .section-card h3{
+      font-size:22px;
+      margin-bottom:18px;
+      color:#0f172a;
+    }
+
+    .details-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+    }
+
+    .detail-box{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .detail-box small{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .detail-box strong{
+      font-size:15px;
+      line-height:1.5;
+      color:#0f172a;
+      word-break:break-word;
+    }
+
+    .info-stack{
+      display:grid;
+      gap:16px;
+    }
+
+    .info-box{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:18px;
+    }
+
+    .info-box h4{
+      font-size:17px;
+      margin-bottom:8px;
+      color:#0f172a;
+    }
+
+    .info-box p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.7;
+    }
+
+    .quick-links{
+      display:grid;
+      gap:14px;
+      margin-top:16px;
+    }
+
+    .quick-link{
+      text-decoration:none;
+      background:linear-gradient(90deg, #eff6ff, #dbeafe);
+      color:#1d4ed8;
+      border:1px solid #bfdbfe;
+      border-radius:16px;
+      padding:16px 18px;
+      font-weight:800;
+      display:block;
+      transition:transform 0.18s ease;
+    }
+
+    .quick-link:hover{
+      transform:translateY(-1px);
+    }
+
+    .notice{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      color:#1e3a8a;
+      font-size:14px;
+      line-height:1.7;
+      font-weight:700;
+    }
+
+    @media (max-width: 1020px){
+      .hero,
+      .section-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero-left h2{
+        font-size:34px;
+      }
+    }
+
+    @media (max-width: 680px){
+      body{
+        padding:16px;
+      }
+
+      .brand-text h1{
+        font-size:24px;
+      }
+
+      .hero-left{
+        padding:24px 20px;
+      }
+
+      .hero-left h2{
+        font-size:28px;
+      }
+
+      .details-grid{
+        grid-template-columns:1fr;
+      }
+
+      .section-card{
+        padding:20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-icon">S</div>
+        <div class="brand-text">
+          <h1>SmartLearn</h1>
+          <p>Premium Student Learning Dashboard</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <a href="/subscription.html" class="top-btn">View Subscription Packages</a>
+        <a href="/exam-access.html" class="top-btn">View Available Exams</a>
+        <a href="/login" class="top-btn logout" id="logoutBtn">Logout</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-left">
+        <div class="badge">Student Premium Dashboard</div>
+        <h2 id="welcomeName">Welcome, Student</h2>
+        <p>
+          Explore available subscription packages and exam opportunities through a premium student portal. Subscribe first to unlock package selection and full examination access.
+        </p>
+
+       <div class="hero-actions">
+  <a href="/subscription-preview.html" class="hero-action primary">View Subscription Packages</a>
+  <a href="/exam-preview.html" class="hero-action secondary">View Available Exams</a>
+</div>
+      </div>
+
+      <div class="hero-right">
+        <div class="mini-card">
+          <small>Student ID</small>
+          <strong id="studentId">-</strong>
+        </div>
+
+        <div class="mini-card">
+          <small>Current Package</small>
+          <strong id="currentPackage">No package selected</strong>
+        </div>
+
+        <div class="mini-card">
+          <small>Subscription Status</small>
+          <strong id="subscriptionStatusText">Inactive</strong>
+          <div id="statusBadge" class="status-pill status-inactive">Inactive</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-grid">
+      <div class="section-card">
+        <h3>Student Details</h3>
+
+        <div class="details-grid">
+          <div class="detail-box">
+            <small>Full Name</small>
+            <strong id="detailName">-</strong>
+          </div>
+
+          <div class="detail-box">
+            <small>Email Address</small>
+            <strong id="detailEmail">-</strong>
+          </div>
+
+          <div class="detail-box">
+            <small>Phone Number</small>
+            <strong id="detailPhone">-</strong>
+          </div>
+
+          <div class="detail-box">
+            <small>Region</small>
+            <strong id="detailRegion">-</strong>
+          </div>
+
+          <div class="detail-box">
+            <small>Selected Package</small>
+            <strong id="detailPackage">No package selected</strong>
+          </div>
+
+          <div class="detail-box">
+            <small>Payment Status</small>
+            <strong id="detailPaymentStatus">Pending</strong>
+          </div>
+        </div>
+
+        <div class="notice">
+          You can preview available subscription packages and examination titles. Full selection and exam opening become available after subscription and payment.
+        </div>
+      </div>
+
+      <div class="section-card">
+  <h3>Quick Actions</h3>
+
+  <div class="info-stack">
+    <div class="info-box">
+      <h4>Subscription Packages</h4>
+      <p>
+        New students can choose a package and continue to payment. Students with active subscription can review current plans anytime.
+      </p>
+    </div>
+
+    <div class="info-box">
+      <h4>Exam Access</h4>
+      <p>
+        Open the examination window. If your subscription is active, the available exam will open automatically.
+      </p>
+    </div>
+  </div>
+
+  <div class="quick-links">
+    <a href="/subscription.html" class="quick-link">
+      Open Subscription Packages
+    </a>
+
+    <a href="/exam-access.html" class="quick-link">
+      Open Examination Window
+    </a>
+  </div>
+</div>
+    </section>
+  </div>
+
+  <script>
+    const studentId = localStorage.getItem("studentId");
+    const studentName = localStorage.getItem("studentName");
+    const studentEmail = localStorage.getItem("studentEmail");
+
+    if (!studentId || !studentEmail) {
+      window.location.href = "/login";
+    }
+
+    const welcomeName = document.getElementById("welcomeName");
+    const studentIdEl = document.getElementById("studentId");
+    const currentPackageEl = document.getElementById("currentPackage");
+    const subscriptionStatusText = document.getElementById("subscriptionStatusText");
+
+    const detailName = document.getElementById("detailName");
+    const detailEmail = document.getElementById("detailEmail");
+    const detailPhone = document.getElementById("detailPhone");
+    const detailRegion = document.getElementById("detailRegion");
+    const detailPackage = document.getElementById("detailPackage");
+    const detailPaymentStatus = document.getElementById("detailPaymentStatus");
+    const statusBadge = document.getElementById("statusBadge");
+
+    function paintStatus(status) {
+      const value = (status || "inactive").toLowerCase();
+
+      subscriptionStatusText.textContent = value === "active" ? "Active" : "Inactive";
+      statusBadge.textContent = value === "active" ? "Active" : "Inactive";
+
+      statusBadge.classList.remove("status-active", "status-inactive");
+      statusBadge.classList.add(value === "active" ? "status-active" : "status-inactive");
+    }
+
+    async function loadStudentProfile() {
+      try {
+        const response = await fetch(`/api/student/profile/${studentId}`);
+        const data = await response.json();
+
+        if (!data.success) {
+          window.location.href = "/login";
+          return;
+        }
+
+        const student = data.student;
+
+        welcomeName.textContent = `Welcome, ${student.name}`;
+        studentIdEl.textContent = student.studentId || "-";
+        currentPackageEl.textContent = student.packageName || "No package selected";
+
+        detailName.textContent = student.name || "-";
+        detailEmail.textContent = student.email || "-";
+        detailPhone.textContent = student.phone || "-";
+        detailRegion.textContent = student.region || "-";
+        detailPackage.textContent = student.packageName || "No package selected";
+        detailPaymentStatus.textContent = student.paymentStatus || "pending";
+
+        paintStatus(student.subscriptionStatus);
+
+        localStorage.setItem("studentName", student.name || "");
+        localStorage.setItem("studentEmail", student.email || "");
+        localStorage.setItem("studentSubscriptionStatus", student.subscriptionStatus || "inactive");
+        localStorage.setItem("studentPackageName", student.packageName || "");
+      } catch (error) {
+        window.location.href = "/login";
+      }
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      localStorage.removeItem("studentId");
+      localStorage.removeItem("studentName");
+      localStorage.removeItem("studentEmail");
+      localStorage.removeItem("studentSubscriptionStatus");
+      localStorage.removeItem("studentPackageName");
+    });
+
+    loadStudentProfile();
+  </script>
+</body>
+</html>

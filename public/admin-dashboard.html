@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLearn Admin Dashboard</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg-1:#04142e;
+      --bg-2:#0a2f73;
+      --bg-3:#1160d9;
+      --panel:#ffffff;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --primary:#2563eb;
+      --primary-2:#60a5fa;
+      --success:#16a34a;
+      --success-bg:#dcfce7;
+      --warning:#92400e;
+      --warning-bg:#fef3c7;
+      --danger:#dc2626;
+      --danger-bg:#fee2e2;
+      --sidebar-border:rgba(255,255,255,0.15);
+      --shadow:0 20px 50px rgba(15,23,42,0.12);
+      --white:#ffffff;
+      --soft-white:#dbeafe;
+    }
+
+    body{
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
+        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
+        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      color:var(--white);
+      overflow-x:hidden;
+    }
+
+    .layout{
+      display:flex;
+      min-height:100vh;
+    }
+
+    .sidebar{
+      width:290px;
+      padding:22px 16px;
+      border-right:1px solid var(--sidebar-border);
+      background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.06));
+      backdrop-filter: blur(18px);
+      position:fixed;
+      inset:0 auto 0 0;
+      overflow-y:auto;
+      z-index:10;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:26px;
+      padding:6px 6px 12px;
+    }
+
+    .brand-icon{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:28px;
+      font-weight:800;
+      background:linear-gradient(135deg, #7dd3fc, #2563eb);
+      box-shadow:0 12px 28px rgba(37,99,235,0.32);
+    }
+
+    .brand-text h1{
+      font-size:28px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .brand-text p{
+      font-size:15px;
+      color:var(--soft-white);
+    }
+
+    .nav{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .tab-btn,
+    .logout-btn{
+      width:100%;
+      border:none;
+      border-radius:16px;
+      padding:16px 18px;
+      text-align:left;
+      cursor:pointer;
+      font-size:16px;
+      font-weight:800;
+      transition:all 0.2s ease;
+    }
+
+    .tab-btn{
+      background:rgba(255,255,255,0.08);
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.10);
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active{
+      background:linear-gradient(90deg, rgba(96,165,250,0.95), rgba(37,99,235,0.95));
+      color:#fff;
+      transform:translateY(-1px);
+    }
+
+    .logout-btn{
+      margin-top:18px;
+      background:rgba(239,68,68,0.18);
+      color:#fff;
+      text-align:center;
+      border:1px solid rgba(248,113,113,0.24);
+    }
+
+    .main{
+      margin-left:290px;
+      width:calc(100% - 290px);
+      padding:24px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .topbar h2{
+      font-size:40px;
+      font-weight:800;
+      color:#fff;
+    }
+
+    .topbar p{
+      color:var(--soft-white);
+      margin-top:8px;
+      font-size:16px;
+    }
+
+    .top-badge{
+      padding:13px 18px;
+      border-radius:16px;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.14);
+      color:#fff;
+      font-size:14px;
+      font-weight:800;
+    }
+
+    .panel{
+      display:none;
+      background:var(--panel);
+      color:var(--text);
+      border-radius:26px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+      border:1px solid rgba(226,232,240,0.95);
+    }
+
+    .panel.active{
+      display:block;
+    }
+
+    .panel h3{
+      font-size:30px;
+      margin-bottom:20px;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(210px, 1fr));
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .card{
+      background:linear-gradient(180deg, #ffffff, #f8fbff);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:0 10px 24px rgba(15,23,42,0.06);
+    }
+
+    .card h4{
+      font-size:16px;
+      color:var(--muted);
+      margin-bottom:12px;
+    }
+
+    .card .value{
+      font-size:38px;
+      font-weight:800;
+      color:#0f172a;
+    }
+
+    .chart-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      margin-top:8px;
+    }
+
+    .chart-card{
+      background:#ffffff;
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:20px;
+    }
+
+    .chart-card h4{
+      font-size:22px;
+      margin-bottom:16px;
+      color:#0f172a;
+    }
+
+    .chart-wrap{
+      position:relative;
+      height:320px;
+    }
+
+    .filters{
+      display:grid;
+      grid-template-columns:2fr 1fr 1fr 1fr;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+      gap:14px;
+      margin-bottom:16px;
+    }
+
+    .form-group{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .form-group label{
+      font-size:16px;
+      font-weight:800;
+      color:#334155;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea{
+      padding:14px 16px;
+      border:1px solid #cbd5e1;
+      border-radius:16px;
+      outline:none;
+      font-size:16px;
+      background:#fff;
+    }
+
+    .form-group textarea{
+      min-height:110px;
+      resize:vertical;
+    }
+
+    .btn-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin:8px 0 10px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:16px;
+      padding:14px 20px;
+      cursor:pointer;
+      font-size:15px;
+      font-weight:800;
+      color:#fff;
+    }
+
+    .btn-primary{ background:linear-gradient(90deg, #60a5fa, #2563eb); }
+    .btn-success{ background:linear-gradient(90deg, #34d399, #16a34a); }
+    .btn-warning{ background:linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .btn-danger{ background:linear-gradient(90deg, #f87171, #dc2626); }
+
+    .table-wrap{
+      overflow-x:auto;
+      margin-top:16px;
+      border:1px solid var(--border);
+      border-radius:20px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:1400px;
+      background:#fff;
+    }
+
+    th, td{
+      padding:16px 14px;
+      border-bottom:1px solid #e2e8f0;
+      text-align:left;
+      font-size:15px;
+      vertical-align:top;
+    }
+
+    th{
+      background:#f8fafc;
+      color:#334155;
+      font-weight:800;
+      position:sticky;
+      top:0;
+    }
+
+    .status{
+      display:inline-block;
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .status.active,
+    .status.paid,
+    .status.allowed{
+      background:var(--success-bg);
+      color:var(--success);
+    }
+
+    .status.inactive,
+    .status.blocked,
+    .status.expired,
+    .status.unpaid{
+      background:var(--danger-bg);
+      color:var(--danger);
+    }
+
+    .status.pending{
+      background:var(--warning-bg);
+      color:var(--warning);
+    }
+
+    .message{
+      display:none;
+      margin-top:12px;
+      padding:14px 16px;
+      border-radius:16px;
+      font-size:14px;
+      font-weight:800;
+    }
+
+    .message.success{
+      display:block;
+      background:#dcfce7;
+      color:#166534;
+      border:1px solid #86efac;
+    }
+
+    .message.error{
+      display:block;
+      background:#fee2e2;
+      color:#991b1b;
+      border:1px solid #fca5a5;
+    }
+
+    .section-note{
+      margin-top:8px;
+      margin-bottom:14px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:#eff6ff;
+      color:#1e3a8a;
+      border:1px solid #bfdbfe;
+      font-weight:700;
+      font-size:15px;
+      line-height:1.8;
+    }
+
+    .manage-box{
+      display:grid;
+      gap:10px;
+      min-width:240px;
+    }
+
+    .manage-box select,
+    .manage-box input{
+      padding:10px 12px;
+      border:1px solid #cbd5e1;
+      border-radius:12px;
+      font-size:14px;
+      outline:none;
+      background:#fff;
+    }
+
+    .manage-box button{
+      border:none;
+      border-radius:12px;
+      padding:10px 12px;
+      cursor:pointer;
+      font-size:13px;
+      font-weight:800;
+      color:#fff;
+      background:linear-gradient(90deg, #60a5fa, #2563eb);
+    }
+
+    @media (max-width: 1100px){
+      .chart-grid{
+        grid-template-columns:1fr;
+      }
+
+      .filters{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media (max-width: 980px){
+      .sidebar{
+        width:100%;
+        position:relative;
+        inset:auto;
+      }
+
+      .main{
+        margin-left:0;
+        width:100%;
+      }
+
+      .layout{
+        flex-direction:column;
+      }
+    }
+
+    @media (max-width: 680px){
+      .main{
+        padding:16px;
+      }
+
+      .panel{
+        padding:18px;
+      }
+
+      .topbar h2{
+        font-size:32px;
+      }
+
+      .panel h3{
+        font-size:24px;
+      }
+
+      .card .value{
+        font-size:30px;
+      }
+
+      .tab-btn,
+      .logout-btn{
+        font-size:15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">S</div>
+        <div class="brand-text">
+          <h1>SmartLearn</h1>
+          <p>Premium Admin Dashboard</p>
+        </div>
+      </div>
+
+      <div class="nav">
+        <button type="button" class="tab-btn active" data-tab="overview">Overview</button>
+        <button type="button" class="tab-btn" data-tab="students">Students</button>
+        <button type="button" class="tab-btn" data-tab="subscriptions">Subscriptions</button>
+        <button type="button" class="tab-btn" data-tab="payments">Payments</button>
+        <button type="button" class="tab-btn" data-tab="exam-links">Exams</button>
+      </div>
+
+      <button type="button" class="logout-btn" id="logoutBtn">Logout</button>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <h2>Welcome, Admin</h2>
+          <p>Manage students, packages, payments and examinations from one business-class dashboard.</p>
+        </div>
+        <div class="top-badge">SmartLearn Control Panel</div>
+      </div>
+
+      <section id="overview" class="panel active">
+        <h3>Dashboard Overview</h3>
+
+        <div class="cards">
+          <div class="card"><h4>Total Students</h4><div class="value" id="totalStudents">0</div></div>
+          <div class="card"><h4>Active Subscriptions</h4><div class="value" id="activeSubscriptions">0</div></div>
+          <div class="card"><h4>Inactive Subscriptions</h4><div class="value" id="inactiveSubscriptions">0</div></div>
+          <div class="card"><h4>Paid Students</h4><div class="value" id="paidStudents">0</div></div>
+          <div class="card"><h4>Pending Payments</h4><div class="value" id="pendingPayments">0</div></div>
+          <div class="card"><h4>Total Revenue</h4><div class="value" id="totalRevenue">TZS 0</div></div>
+          <div class="card"><h4>Active Exam Links</h4><div class="value" id="activeExamLinks">0</div></div>
+          <div class="card"><h4>Total Packages</h4><div class="value" id="totalPackages">0</div></div>
+        </div>
+
+        <div class="section-note">
+          This overview gives you a quick business summary of students, subscriptions, payments, packages and examination activity.
+        </div>
+
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h4>Revenue Overview</h4>
+            <div class="chart-wrap">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h4>Subscription Status Overview</h4>
+            <div class="chart-wrap">
+              <canvas id="subscriptionChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="students" class="panel">
+        <h3>Students</h3>
+
+        <div class="section-note">
+          Admin can register students here, then manage each student's package, subscription status and payment status directly.
+        </div>
+
+        <div class="filters">
+          <input type="text" id="studentSearch" placeholder="Search by name, ID or email">
+          <select id="studentSubscriptionFilter">
+            <option value="">All Subscription Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <select id="studentPaymentFilter">
+            <option value="">All Payment Status</option>
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+          </select>
+          <input type="text" id="studentPackageFilter" placeholder="Filter by package code">
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-warning" id="applyStudentFiltersBtn">Apply Filters</button>
+          <button type="button" class="btn btn-primary" id="resetStudentFiltersBtn">Reset</button>
+          <button type="button" class="btn btn-success" id="loadStudentsBtn">Refresh Students</button>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="studentName" placeholder="Enter full name">
+          </div>
+
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="studentEmail" placeholder="Enter email">
+          </div>
+
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="text" id="studentPhone" placeholder="Enter phone number">
+          </div>
+
+          <div class="form-group">
+            <label>Region</label>
+            <input type="text" id="studentRegion" placeholder="Enter region">
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input type="text" id="studentPassword" placeholder="Default password e.g 12345">
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-success" id="saveStudentBtn">Register Student</button>
+        </div>
+
+        <div id="studentMessage" class="message"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Region</th>
+                <th>Registered Date</th>
+                <th>Current Package</th>
+                <th>Subscription Status</th>
+                <th>Payment Status</th>
+                <th>Amount Paid</th>
+                <th>Payment Method</th>
+                <th>Exam Access</th>
+                <th>Manage Student</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="subscriptions" class="panel">
+        <h3>Subscriptions</h3>
+
+        <div class="section-note">
+          Create and manage package plans that students can subscribe to or upgrade between.
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Package Name</label>
+            <input type="text" id="packageName" placeholder="e.g Monthly Plan">
+          </div>
+
+          <div class="form-group">
+            <label>Package Code</label>
+            <input type="text" id="packageCode" placeholder="e.g basic-plan">
+          </div>
+
+          <div class="form-group">
+            <label>Price (TZS)</label>
+            <input type="number" id="packagePrice" placeholder="e.g 10000">
+          </div>
+
+          <div class="form-group">
+            <label>Period</label>
+            <input type="text" id="packageDuration" placeholder="e.g Monthly">
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select id="packageStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="packageDescription" placeholder="Write package benefits"></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-success" id="savePackageBtn">Save Package</button>
+          <button type="button" class="btn btn-warning" id="loadPackagesBtn">Refresh Packages</button>
+        </div>
+
+        <div id="packageMessage" class="message"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Package Name</th>
+                <th>Code</th>
+                <th>Price</th>
+                <th>Period</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Students Using</th>
+                <th>Created Date</th>
+              </tr>
+            </thead>
+            <tbody id="packagesTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="payments" class="panel">
+        <h3>Payments</h3>
+
+        <div class="section-note">
+          Review payment records, package payments, student payment methods and business revenue details.
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-warning" id="loadPaymentsBtn">Refresh Payments</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Payment ID</th>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Package</th>
+                <th>Amount</th>
+                <th>Period</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="paymentsTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="exam-links" class="panel">
+        <h3>Exams</h3>
+
+        <div class="section-note">
+          Create and manage examination titles and links available to subscribed students.
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Exam Title</label>
+            <input type="text" id="examTitle" placeholder="Enter exam title">
+          </div>
+
+          <div class="form-group">
+            <label>Exam Link</label>
+            <input type="text" id="examUrl" placeholder="Paste exam link">
+          </div>
+
+          <div class="form-group">
+            <label>Class / Group</label>
+            <input type="text" id="examGroup" placeholder="e.g Form Four">
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            <select id="examStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-success" id="saveExamBtn">Save Exam Link</button>
+          <button type="button" class="btn btn-warning" id="loadExamsBtn">Refresh Exams</button>
+        </div>
+
+        <div id="examMessage" class="message"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Exam Title</th>
+                <th>Exam Link</th>
+                <th>Class / Group</th>
+                <th>Status</th>
+                <th>Date Added</th>
+                <th>Allowed Students</th>
+              </tr>
+            </thead>
+            <tbody id="examTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/admin-dashboard.js"></script>
+</body>
+</html>

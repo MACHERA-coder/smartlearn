@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLearn Payment</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg-1:#04142e;
+      --bg-2:#0a2f73;
+      --bg-3:#1160d9;
+      --text:#ffffff;
+      --text-soft:#dbeafe;
+      --dark:#0f172a;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --primary-2:#60a5fa;
+      --success:#16a34a;
+      --success-bg:#dcfce7;
+      --warning:#92400e;
+      --warning-bg:#fef3c7;
+      --danger:#dc2626;
+      --danger-bg:#fee2e2;
+      --shadow:0 20px 50px rgba(15,23,42,0.12);
+    }
+
+    body{
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
+        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
+        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      overflow-x:hidden;
+      padding:22px;
+    }
+
+    .container{
+      max-width:1280px;
+      margin:0 auto;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .brand h1{
+      font-size:32px;
+      margin-bottom:4px;
+      font-weight:800;
+    }
+
+    .brand p{
+      color:var(--text-soft);
+      font-size:14px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .top-btn{
+      text-decoration:none;
+      padding:12px 16px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:14px;
+      color:#fff;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.14);
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.15fr 0.85fr;
+      gap:20px;
+      margin-bottom:22px;
+    }
+
+    .hero-left{
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      padding:32px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.16);
+      box-shadow:0 24px 60px rgba(0,0,0,0.18);
+      backdrop-filter: blur(18px);
+    }
+
+    .hero-left::before{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      top:-70px;
+      right:-60px;
+      background:rgba(255,255,255,0.08);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.12);
+      font-size:13px;
+      font-weight:700;
+      color:#e0f2fe;
+      margin-bottom:18px;
+    }
+
+    .hero-left h2{
+      font-size:38px;
+      line-height:1.1;
+      margin-bottom:14px;
+      font-weight:800;
+      max-width:700px;
+    }
+
+    .hero-left p{
+      font-size:16px;
+      line-height:1.8;
+      color:var(--text-soft);
+      max-width:720px;
+    }
+
+    .hero-right{
+      display:grid;
+      gap:16px;
+    }
+
+    .mini-card{
+      background:#ffffff;
+      color:var(--dark);
+      border-radius:22px;
+      padding:20px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.9);
+    }
+
+    .mini-card small{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .mini-card strong{
+      font-size:18px;
+      display:block;
+      line-height:1.5;
+    }
+
+    .status-pill{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+      margin-top:8px;
+    }
+
+    .status-active{
+      background:var(--success-bg);
+      color:var(--success);
+    }
+
+    .status-inactive{
+      background:var(--warning-bg);
+      color:var(--warning);
+    }
+
+    .main-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+    }
+
+    .card{
+      background:#ffffff;
+      color:var(--dark);
+      border-radius:24px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.95);
+    }
+
+    .card h3{
+      font-size:24px;
+      margin-bottom:18px;
+    }
+
+    .summary-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+      margin-bottom:16px;
+    }
+
+    .summary-box{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .summary-box small{
+      display:block;
+      color:var(--muted);
+      margin-bottom:8px;
+      font-size:13px;
+    }
+
+    .summary-box strong{
+      display:block;
+      font-size:16px;
+      line-height:1.6;
+    }
+
+    .upgrade-note{
+      margin-top:12px;
+      padding:14px 16px;
+      border-radius:16px;
+      background:#eff6ff;
+      color:#1e3a8a;
+      border:1px solid #bfdbfe;
+      font-size:14px;
+      line-height:1.7;
+      font-weight:700;
+      display:none;
+    }
+
+    .method-list{
+      display:grid;
+      gap:14px;
+      margin-bottom:18px;
+    }
+
+    .method-item{
+      border:2px solid #dbeafe;
+      background:#f8fbff;
+      border-radius:18px;
+      padding:16px;
+      cursor:pointer;
+      transition:all 0.18s ease;
+    }
+
+    .method-item.active{
+      border-color:#2563eb;
+      background:#eff6ff;
+      box-shadow:0 8px 20px rgba(37,99,235,0.12);
+    }
+
+    .method-item strong{
+      display:block;
+      font-size:17px;
+      margin-bottom:6px;
+    }
+
+    .method-item span{
+      color:#64748b;
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    .pay-btn{
+      width:100%;
+      border:none;
+      border-radius:20px;
+      padding:17px 18px;
+      cursor:pointer;
+      background:linear-gradient(90deg, var(--primary-2), var(--primary));
+      color:#fff;
+      font-size:18px;
+      font-weight:800;
+      box-shadow:0 15px 28px rgba(37,99,235,0.34);
+      transition:transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .pay-btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 18px 32px rgba(37,99,235,0.4);
+    }
+
+    .pay-btn:disabled{
+      opacity:0.7;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .message{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:16px;
+      font-size:14px;
+      font-weight:700;
+      display:none;
+      line-height:1.6;
+    }
+
+    .message.error{
+      display:block;
+      background:var(--danger-bg);
+      border:1px solid #fca5a5;
+      color:#991b1b;
+    }
+
+    .message.success{
+      display:block;
+      background:var(--success-bg);
+      border:1px solid #86efac;
+      color:#166534;
+    }
+
+    .message.warning{
+      display:block;
+      background:var(--warning-bg);
+      border:1px solid #fcd34d;
+      color:#92400e;
+    }
+
+    .info-note{
+      margin-top:16px;
+      padding:16px;
+      border-radius:18px;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      color:#1e3a8a;
+      font-size:14px;
+      line-height:1.7;
+      font-weight:700;
+    }
+
+    .compare-box{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:18px;
+      margin-top:12px;
+    }
+
+    .compare-box h4{
+      font-size:18px;
+      margin-bottom:10px;
+    }
+
+    .compare-box p{
+      color:#64748b;
+      font-size:14px;
+      line-height:1.7;
+    }
+
+    @media (max-width: 980px){
+      .hero,
+      .main-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero-left h2{
+        font-size:30px;
+      }
+    }
+
+    @media (max-width: 680px){
+      body{
+        padding:16px;
+      }
+
+      .hero-left{
+        padding:24px 20px;
+      }
+
+      .hero-left h2{
+        font-size:26px;
+      }
+
+      .card{
+        padding:20px;
+      }
+
+      .summary-grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Payment Center</h1>
+        <p>Complete payment to activate or upgrade your SmartLearn subscription.</p>
+      </div>
+
+      <div class="top-actions">
+        <a href="/subscription.html" class="top-btn">Back to Subscription</a>
+        <a href="/student-dashboard" class="top-btn">Dashboard</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-left">
+        <div class="badge">SmartLearn Secure Payment</div>
+        <h2 id="heroHeading">Complete payment for your selected package.</h2>
+        <p>
+          Review your chosen package, confirm your payment method and activate your subscription. Upgrades will move you from your current plan to the selected higher package.
+        </p>
+      </div>
+
+      <div class="hero-right">
+        <div class="mini-card">
+          <small>Student ID</small>
+          <strong id="studentIdText">-</strong>
+        </div>
+
+        <div class="mini-card">
+          <small>Current Package</small>
+          <strong id="currentPackageText">No package selected</strong>
+        </div>
+
+        <div class="mini-card">
+          <small>Subscription Status</small>
+          <strong id="subscriptionText">Inactive</strong>
+          <div id="statusBadge" class="status-pill status-inactive">Inactive</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card">
+        <h3>Payment Summary</h3>
+
+        <div class="summary-grid">
+          <div class="summary-box">
+            <small>Selected Package</small>
+            <strong id="selectedPackageText">-</strong>
+          </div>
+
+          <div class="summary-box">
+            <small>Amount</small>
+            <strong id="selectedPriceText">TZS 0</strong>
+          </div>
+
+          <div class="summary-box">
+            <small>Billing Period</small>
+            <strong id="selectedPeriodText">-</strong>
+          </div>
+
+          <div class="summary-box">
+            <small>Payment Type</small>
+            <strong id="paymentTypeText">New Subscription</strong>
+          </div>
+        </div>
+
+        <div id="upgradeNote" class="upgrade-note"></div>
+
+        <div class="compare-box">
+          <h4>Payment Information</h4>
+          <p>
+            Confirm the package you selected. Once payment is completed successfully, your subscription status will become active and exam access will be unlocked automatically.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Choose Payment Method</h3>
+
+        <div class="method-list">
+          <div class="method-item" data-method="M-Pesa">
+            <strong>M-Pesa</strong>
+            <span>Fast mobile payment using M-Pesa.</span>
+          </div>
+
+          <div class="method-item" data-method="Mixx by Yas">
+            <strong>Mixx by Yas</strong>
+            <span>Pay securely using Mixx by Yas.</span>
+          </div>
+
+          <div class="method-item" data-method="Airtel Money">
+            <strong>Airtel Money</strong>
+            <span>Pay easily using Airtel Money.</span>
+          </div>
+        </div>
+
+        <button id="payBtn" class="pay-btn">Pay Now</button>
+        <div id="messageBox" class="message"></div>
+
+        <div class="info-note">
+          After successful payment, your subscription will activate automatically and you will continue to the exam access page.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const studentId = localStorage.getItem("studentId");
+    const studentName = localStorage.getItem("studentName");
+    const studentEmail = localStorage.getItem("studentEmail");
+    const currentPackageName = (localStorage.getItem("studentPackageName") || "").trim();
+    const currentSubscriptionStatus = (localStorage.getItem("studentSubscriptionStatus") || "inactive").trim().toLowerCase();
+
+    if (!studentId || !studentEmail) {
+      window.location.href = "/login";
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const packageCode = (urlParams.get("package") || "").trim();
+    const packageName = (urlParams.get("name") || "").trim();
+    const packagePrice = Number(urlParams.get("price") || 0);
+    const packagePeriod = (urlParams.get("period") || "").trim();
+
+    if (!packageCode || !packageName || !packagePrice || !packagePeriod) {
+      window.location.href = "/subscription.html";
+    }
+
+    const heroHeading = document.getElementById("heroHeading");
+    const studentIdText = document.getElementById("studentIdText");
+    const currentPackageText = document.getElementById("currentPackageText");
+    const subscriptionText = document.getElementById("subscriptionText");
+    const statusBadge = document.getElementById("statusBadge");
+
+    const selectedPackageText = document.getElementById("selectedPackageText");
+    const selectedPriceText = document.getElementById("selectedPriceText");
+    const selectedPeriodText = document.getElementById("selectedPeriodText");
+    const paymentTypeText = document.getElementById("paymentTypeText");
+    const upgradeNote = document.getElementById("upgradeNote");
+
+    const payBtn = document.getElementById("payBtn");
+    const messageBox = document.getElementById("messageBox");
+    const methodItems = document.querySelectorAll(".method-item");
+
+    let selectedMethod = "";
+
+    function showMessage(text, type) {
+      messageBox.className = `message ${type}`;
+      messageBox.textContent = text;
+    }
+
+    function paintStatus(status) {
+      const value = (status || "inactive").toLowerCase();
+      subscriptionText.textContent = value === "active" ? "Active" : "Inactive";
+      statusBadge.textContent = value === "active" ? "Active" : "Inactive";
+      statusBadge.classList.remove("status-active", "status-inactive");
+      statusBadge.classList.add(value === "active" ? "status-active" : "status-inactive");
+    }
+
+    function setupPage() {
+      studentIdText.textContent = studentId || "-";
+      currentPackageText.textContent = currentPackageName || "No package selected";
+      paintStatus(currentSubscriptionStatus);
+
+      selectedPackageText.textContent = packageName;
+      selectedPriceText.textContent = `TZS ${packagePrice.toLocaleString()}`;
+      selectedPeriodText.textContent = packagePeriod;
+
+      const isUpgrade = currentSubscriptionStatus === "active" &&
+        currentPackageName &&
+        currentPackageName.toLowerCase() !== packageName.toLowerCase();
+
+      if (isUpgrade) {
+        heroHeading.textContent = `Upgrade from ${currentPackageName} to ${packageName}.`;
+        paymentTypeText.textContent = "Upgrade Payment";
+        upgradeNote.style.display = "block";
+        upgradeNote.textContent = `You are upgrading from ${currentPackageName} to ${packageName}. After payment, your account will switch to the new package automatically.`;
+      } else {
+        heroHeading.textContent = `Complete payment for ${packageName}.`;
+        paymentTypeText.textContent = currentSubscriptionStatus === "active" ? "Renewal / Package Payment" : "New Subscription";
+      }
+    }
+
+    methodItems.forEach(item => {
+      item.addEventListener("click", () => {
+        methodItems.forEach(box => box.classList.remove("active"));
+        item.classList.add("active");
+        selectedMethod = item.getAttribute("data-method") || "";
+      });
+    });
+
+    async function handlePayment() {
+      if (!selectedMethod) {
+        showMessage("Please choose a payment method first.", "warning");
+        return;
+      }
+
+      payBtn.disabled = true;
+      showMessage("Processing payment...", "success");
+
+      try {
+        const response = await fetch("/api/pay", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            studentId,
+            email: studentEmail,
+            studentName,
+            package: packageCode,
+            packageCode,
+            packageName,
+            price: packagePrice,
+            period: packagePeriod,
+            method: selectedMethod
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          localStorage.setItem("studentPackageName", packageName);
+          localStorage.setItem("studentSubscriptionStatus", "active");
+          showMessage(data.message || "Payment completed successfully.", "success");
+
+          setTimeout(() => {
+            window.location.href = data.redirect || "/exam-access.html";
+          }, 1200);
+        } else {
+          showMessage(data.message || "Payment failed.", "error");
+          payBtn.disabled = false;
+        }
+      } catch (error) {
+        showMessage("Server error during payment.", "error");
+        payBtn.disabled = false;
+      }
+    }
+
+    payBtn.addEventListener("click", handlePayment);
+
+    setupPage();
+  </script>
+</body>
+</html>

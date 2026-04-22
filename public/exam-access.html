@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLearn Exam Access</title>
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    :root{
+      --bg-1:#04142e;
+      --bg-2:#0a2f73;
+      --bg-3:#1160d9;
+      --text:#ffffff;
+      --text-soft:#dbeafe;
+      --dark:#0f172a;
+      --muted:#64748b;
+      --primary:#2563eb;
+      --primary-2:#60a5fa;
+      --success:#16a34a;
+      --success-bg:#dcfce7;
+      --danger:#dc2626;
+      --danger-bg:#fee2e2;
+      --warning:#92400e;
+      --warning-bg:#fef3c7;
+      --shadow:0 20px 50px rgba(15,23,42,0.12);
+    }
+
+    body{
+      min-height:100vh;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
+        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
+        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
+      overflow-x:hidden;
+      padding:22px;
+    }
+
+    .container{
+      max-width:1240px;
+      margin:0 auto;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .topbar h1{
+      font-size:34px;
+      font-weight:800;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .top-actions a{
+      text-decoration:none;
+      padding:12px 16px;
+      border-radius:14px;
+      font-weight:700;
+      font-size:14px;
+      color:#fff;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.14);
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-radius:28px;
+      padding:32px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
+      border:1px solid rgba(255,255,255,0.16);
+      box-shadow:0 24px 60px rgba(0,0,0,0.18);
+      backdrop-filter: blur(18px);
+      margin-bottom:22px;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      top:-70px;
+      right:-60px;
+      background:rgba(255,255,255,0.08);
+    }
+
+    .badge{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.12);
+      border:1px solid rgba(255,255,255,0.12);
+      font-size:13px;
+      font-weight:700;
+      color:#e0f2fe;
+      margin-bottom:18px;
+    }
+
+    .hero h2{
+      font-size:38px;
+      line-height:1.1;
+      margin-bottom:14px;
+      font-weight:800;
+      max-width:760px;
+    }
+
+    .hero p{
+      font-size:16px;
+      line-height:1.8;
+      color:var(--text-soft);
+      max-width:780px;
+    }
+
+    .main-grid{
+      display:grid;
+      grid-template-columns:1.1fr 0.9fr;
+      gap:22px;
+    }
+
+    .card{
+      background:#ffffff;
+      color:var(--dark);
+      border-radius:24px;
+      padding:24px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(226,232,240,0.95);
+    }
+
+    .card h3{
+      font-size:24px;
+      margin-bottom:18px;
+    }
+
+    .message{
+      padding:14px 16px;
+      border-radius:16px;
+      font-size:14px;
+      font-weight:700;
+      line-height:1.7;
+      margin-bottom:16px;
+      display:none;
+    }
+
+    .message.success{
+      display:block;
+      background:#dcfce7;
+      color:#166534;
+      border:1px solid #86efac;
+    }
+
+    .message.error{
+      display:block;
+      background:#fee2e2;
+      color:#991b1b;
+      border:1px solid #fca5a5;
+    }
+
+    .message.warning{
+      display:block;
+      background:#fef3c7;
+      color:#92400e;
+      border:1px solid #fcd34d;
+    }
+
+    .exam-box{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:20px;
+      padding:20px;
+      margin-bottom:18px;
+    }
+
+    .exam-box small{
+      display:block;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .exam-title{
+      font-size:30px;
+      font-weight:800;
+      color:#0f172a;
+      line-height:1.3;
+      margin-bottom:10px;
+    }
+
+    .exam-desc{
+      color:#475569;
+      font-size:15px;
+      line-height:1.8;
+    }
+
+    .action-row{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:18px;
+    }
+
+    .action-btn{
+      display:inline-block;
+      text-decoration:none;
+      padding:15px 18px;
+      border-radius:18px;
+      font-weight:800;
+      font-size:16px;
+      border:none;
+      cursor:pointer;
+      background:linear-gradient(90deg, var(--primary-2), var(--primary));
+      color:#fff;
+      box-shadow:0 14px 28px rgba(37,99,235,0.28);
+    }
+
+    .secondary-btn{
+      display:inline-block;
+      text-decoration:none;
+      padding:14px 16px;
+      border-radius:16px;
+      font-weight:700;
+      font-size:14px;
+      color:#1d4ed8;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+    }
+
+    .mini-grid{
+      display:grid;
+      gap:14px;
+    }
+
+    .mini-box{
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .mini-box small{
+      display:block;
+      color:var(--muted);
+      margin-bottom:8px;
+      font-size:13px;
+    }
+
+    .mini-box strong{
+      font-size:16px;
+      line-height:1.6;
+      display:block;
+    }
+
+    .status-pill{
+      display:inline-block;
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:800;
+      margin-top:8px;
+    }
+
+    .status-active{
+      background:var(--success-bg);
+      color:var(--success);
+    }
+
+    .status-inactive{
+      background:var(--warning-bg);
+      color:var(--warning);
+    }
+
+    .info-note{
+      margin-top:16px;
+      padding:16px;
+      border-radius:18px;
+      background:#eff6ff;
+      border:1px solid #bfdbfe;
+      color:#1e3a8a;
+      font-size:14px;
+      line-height:1.7;
+      font-weight:700;
+    }
+
+    @media (max-width: 980px){
+      .main-grid{
+        grid-template-columns:1fr;
+      }
+
+      .hero h2{
+        font-size:30px;
+      }
+    }
+
+    @media (max-width: 680px){
+      body{
+        padding:16px;
+      }
+
+      .hero{
+        padding:24px 20px;
+      }
+
+      .hero h2{
+        font-size:26px;
+      }
+
+      .card{
+        padding:20px;
+      }
+
+      .exam-title{
+        font-size:24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <h1>Exam Access</h1>
+      <div class="top-actions">
+        <a href="/student-dashboard">Back to Dashboard</a>
+        <a href="/subscription.html">Subscription</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="badge">SmartLearn Examination Window</div>
+      <h2>Open your available examination based on your subscription status.</h2>
+      <p>
+        Students with active subscription and completed payment can start the available exam directly. Students without active subscription will be guided to subscribe first.
+      </p>
+    </section>
+
+    <section class="main-grid">
+      <div class="card">
+        <h3>Available Examination</h3>
+        <div id="messageBox" class="message"></div>
+
+        <div class="exam-box">
+          <small>Exam Title</small>
+          <div id="examTitle" class="exam-title">Loading...</div>
+          <div class="exam-desc" id="examDesc">
+            Checking your exam access status...
+          </div>
+        </div>
+
+        <div class="action-row" id="examActionArea"></div>
+
+        <div class="info-note">
+          Only students with active subscription and completed payment can start the examination.
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Student Status</h3>
+
+        <div class="mini-grid">
+          <div class="mini-box">
+            <small>Student ID</small>
+            <strong id="studentIdText">-</strong>
+          </div>
+
+          <div class="mini-box">
+            <small>Student Name</small>
+            <strong id="studentNameText">-</strong>
+          </div>
+
+          <div class="mini-box">
+            <small>Subscription Status</small>
+            <strong id="subscriptionText">Inactive</strong>
+            <div id="statusBadge" class="status-pill status-inactive">Inactive</div>
+          </div>
+
+          <div class="mini-box">
+            <small>Current Package</small>
+            <strong id="currentPackageText">No package selected</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const studentId = localStorage.getItem("studentId");
+    const studentName = localStorage.getItem("studentName");
+    const studentEmail = localStorage.getItem("studentEmail");
+    const currentPackageName = localStorage.getItem("studentPackageName") || "No package selected";
+
+    if (!studentId || !studentEmail) {
+      window.location.href = "/login";
+    }
+
+    const examTitle = document.getElementById("examTitle");
+    const examDesc = document.getElementById("examDesc");
+    const messageBox = document.getElementById("messageBox");
+    const examActionArea = document.getElementById("examActionArea");
+    const studentIdText = document.getElementById("studentIdText");
+    const studentNameText = document.getElementById("studentNameText");
+    const subscriptionText = document.getElementById("subscriptionText");
+    const statusBadge = document.getElementById("statusBadge");
+    const currentPackageText = document.getElementById("currentPackageText");
+
+    studentIdText.textContent = studentId || "-";
+    studentNameText.textContent = studentName || "-";
+    currentPackageText.textContent = currentPackageName || "No package selected";
+
+    function showMessage(text, type) {
+      messageBox.className = `message ${type}`;
+      messageBox.textContent = text;
+    }
+
+    function paintStatus(status) {
+      const value = (status || "inactive").toLowerCase();
+      subscriptionText.textContent = value === "active" ? "Active" : "Inactive";
+      statusBadge.textContent = value === "active" ? "Active" : "Inactive";
+      statusBadge.classList.remove("status-active", "status-inactive");
+      statusBadge.classList.add(value === "active" ? "status-active" : "status-inactive");
+    }
+
+    async function checkExamAccess() {
+      try {
+        const response = await fetch(`/api/exam-access/${studentId}`);
+        const data = await response.json();
+
+        examTitle.textContent = data.examTitle || "No exam available";
+        paintStatus(data.subscriptionStatus || "inactive");
+        localStorage.setItem("studentSubscriptionStatus", data.subscriptionStatus || "inactive");
+
+        if (data.success && data.examUrl) {
+          showMessage(data.message || "Exam access granted.", "success");
+          examDesc.textContent = "Your subscription is active. You can now start the available examination.";
+          examActionArea.innerHTML = `
+            <a class="action-btn" href="${data.examUrl}" target="_blank" rel="noopener noreferrer">
+              Start Exam
+            </a>
+            <a class="secondary-btn" href="/student-dashboard">
+              Back to Dashboard
+            </a>
+          `;
+        } else {
+          showMessage(data.message || "Subscription inactive. Subscribe first.", "warning");
+          examDesc.textContent = "This examination is available on the platform, but full access is unlocked only after successful subscription and payment.";
+          examActionArea.innerHTML = `
+            <a class="action-btn" href="/subscription.html">
+              Subscribe First
+            </a>
+            <a class="secondary-btn" href="/student-dashboard">
+              Back to Dashboard
+            </a>
+          `;
+        }
+      } catch (error) {
+        showMessage("Failed to check exam access.", "error");
+        examTitle.textContent = "No exam available";
+        examDesc.textContent = "Unable to verify exam access at the moment.";
+        examActionArea.innerHTML = `
+          <a class="secondary-btn" href="/student-dashboard">
+            Back to Dashboard
+          </a>
+        `;
+      }
+    }
+
+    checkExamAccess();
+  </script>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscription Packages Preview</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+min-height:100vh;
+padding:30px;
+background:linear-gradient(135deg,#04142e,#0a2f73,#1160d9);
+color:white;
+}
+
+.container{
+max-width:1300px;
+margin:auto;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+flex-wrap:wrap;
+gap:15px;
+}
+
+.top h1{
+font-size:42px;
+font-weight:800;
+}
+
+.top a{
+text-decoration:none;
+color:white;
+padding:12px 18px;
+border-radius:14px;
+background:rgba(255,255,255,.14);
+}
+
+.hero{
+padding:30px;
+border-radius:28px;
+background:rgba(255,255,255,.09);
+margin-bottom:30px;
+}
+
+.hero h2{
+font-size:36px;
+margin-bottom:14px;
+}
+
+.hero p{
+font-size:18px;
+line-height:1.8;
+color:#dbeafe;
+}
+
+.student-box{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:16px;
+margin-top:20px;
+}
+
+.student-mini{
+background:rgba(255,255,255,.08);
+padding:16px;
+border-radius:18px;
+}
+
+.student-mini small{
+display:block;
+color:#cbd5e1;
+margin-bottom:6px;
+font-size:13px;
+}
+
+.student-mini strong{
+font-size:18px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:22px;
+}
+
+.card{
+background:white;
+color:#0f172a;
+border-radius:28px;
+padding:28px;
+box-shadow:0 18px 35px rgba(0,0,0,.18);
+position:relative;
+}
+
+.card.current-plan{
+outline:4px solid rgba(96,165,250,.35);
+}
+
+.plan-badge{
+position:absolute;
+top:16px;
+right:16px;
+padding:8px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:800;
+}
+
+.plan-badge.current{
+background:#dcfce7;
+color:#166534;
+}
+
+.plan-badge.upgrade{
+background:#dbeafe;
+color:#1d4ed8;
+}
+
+.card h3{
+font-size:28px;
+margin-bottom:16px;
+}
+
+.price{
+font-size:42px;
+font-weight:800;
+color:#2563eb;
+margin-bottom:10px;
+}
+
+.small{
+font-size:14px;
+color:#64748b;
+margin-bottom:16px;
+}
+
+.desc{
+font-size:16px;
+line-height:1.7;
+margin-bottom:20px;
+color:#334155;
+min-height:70px;
+}
+
+.btn{
+display:block;
+text-align:center;
+padding:15px;
+border-radius:16px;
+text-decoration:none;
+font-weight:800;
+font-size:18px;
+background:linear-gradient(90deg,#60a5fa,#2563eb);
+color:white;
+border:none;
+cursor:pointer;
+}
+
+.btn.subscribed{
+background:#dcfce7;
+color:#166534;
+cursor:default;
+}
+
+.note{
+margin-top:30px;
+padding:18px;
+border-radius:18px;
+background:rgba(255,255,255,.1);
+font-weight:700;
+}
+
+@media (max-width: 900px){
+.student-box{
+grid-template-columns:1fr;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="top">
+<h1>Subscription Packages</h1>
+<a href="/student-dashboard">Back to Dashboard</a>
+</div>
+
+<div class="hero">
+<h2>Choose Your SmartLearn Plan</h2>
+<p>
+Preview available subscription packages below. Unlock real package activation and payment in the subscription center.
+</p>
+
+<div class="student-box">
+<div class="student-mini">
+<small>Student Name</small>
+<strong id="studentName">Student</strong>
+</div>
+<div class="student-mini">
+<small>Current Package</small>
+<strong id="currentPackageText">No package selected</strong>
+</div>
+<div class="student-mini">
+<small>Subscription Status</small>
+<strong id="subscriptionStatusText">Inactive</strong>
+</div>
+</div>
+</div>
+
+<div class="grid" id="packagesGrid"></div>
+
+<div class="note">
+Select any package to continue to the real subscription page.
+</div>
+
+</div>
+
+<script>
+const studentId = localStorage.getItem("studentId");
+const studentName = localStorage.getItem("studentName") || "Student";
+const studentEmail = localStorage.getItem("studentEmail");
+const currentPackageName = (localStorage.getItem("studentPackageName") || "").trim();
+const currentSubscriptionStatus = (localStorage.getItem("studentSubscriptionStatus") || "inactive").trim().toLowerCase();
+
+document.getElementById("studentName").textContent = studentName;
+document.getElementById("currentPackageText").textContent = currentPackageName || "No package selected";
+document.getElementById("subscriptionStatusText").textContent =
+  currentSubscriptionStatus === "active" ? "Active" : "Inactive";
+
+const packagesGrid = document.getElementById("packagesGrid");
+
+const packageList = [
+  {
+    code: "basic",
+    name: "Basic Plan",
+    price: 5000,
+    period: "Monthly",
+    description: "Perfect for standard learners who need affordable access."
+  },
+  {
+    code: "standard",
+    name: "Standard Plan",
+    price: 10000,
+    period: "Monthly",
+    description: "Best choice for serious students needing extended resources."
+  },
+  {
+    code: "premium",
+    name: "Premium Plan",
+    price: 15000,
+    period: "Monthly",
+    description: "Full premium learning access with priority benefits."
+  }
+];
+
+function getButtonState(pkg) {
+  const hasActivePlan = currentSubscriptionStatus === "active" && currentPackageName;
+
+  if (!hasActivePlan) {
+    return {
+      label: "Subscribe Now",
+      className: "",
+      disabled: false,
+      badge: ""
+    };
+  }
+
+  if (currentPackageName.toLowerCase() === pkg.name.toLowerCase()) {
+    return {
+      label: "Subscribed",
+      className: "subscribed",
+      disabled: true,
+      badge: '<div class="plan-badge current">Current Plan</div>'
+    };
+  }
+
+  return {
+    label: "Upgrade",
+    className: "",
+    disabled: false,
+    badge: '<div class="plan-badge upgrade">Upgrade Option</div>'
+  };
+}
+
+function renderPackages() {
+  packagesGrid.innerHTML = "";
+
+  packageList.forEach((pkg) => {
+    const state = getButtonState(pkg);
+    const isCurrent = state.label === "Subscribed";
+
+    const card = document.createElement("div");
+    card.className = "card" + (isCurrent ? " current-plan" : "");
+
+    card.innerHTML = `
+      ${state.badge}
+      <h3>${pkg.name}</h3>
+      <div class="price">TZS ${pkg.price.toLocaleString()}</div>
+      <div class="small">${pkg.period}</div>
+      <div class="desc">${pkg.description}</div>
+      <button class="btn ${state.className}" ${state.disabled ? "disabled" : ""}>
+        ${state.label}
+      </button>
+    `;
+
+    const button = card.querySelector(".btn");
+
+    if (!state.disabled) {
+      button.addEventListener("click", () => {
+        window.location.href =
+          `/subscription.html?package=${encodeURIComponent(pkg.code)}&name=${encodeURIComponent(pkg.name)}&price=${encodeURIComponent(pkg.price)}&period=${encodeURIComponent(pkg.period)}`;
+      });
+    }
+
+    packagesGrid.appendChild(card);
+  });
+}
+
+renderPackages();
+</script>
+
+</body>
+</html>
