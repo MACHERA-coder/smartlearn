@@ -16,19 +16,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'smartlearn',
- });
+const db = mysql.createPool({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'smartlearn',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  timezone: '+03:00',
+  dateStrings: true
+});
 
-db.connect((err) => {
+db.getConnection((err, connection) => {
   if (err) {
     console.error('Database connection failed:', err);
     return;
   }
-  console.log('Connected to MySQL database');
+
+  console.log('Connected to MySQL database pool');
+  connection.release();
   createTables();
 });
 
