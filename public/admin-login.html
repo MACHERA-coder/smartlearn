@@ -1,75 +1,235 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Login</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartLearn Admin Login</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+    body{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;
+      background:
+        radial-gradient(circle at top left,rgba(0,170,255,.25),transparent 32%),
+        radial-gradient(circle at bottom right,rgba(0,90,200,.28),transparent 30%),
+        linear-gradient(135deg,#071a2f 0%,#0a2747 45%,#0f4c81 100%);
+      color:#fff;
+    }
+    .login-wrap{
+      width:100%;max-width:1080px;display:grid;grid-template-columns:1.1fr .9fr;
+      background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+      border-radius:28px;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.35);
+      backdrop-filter:blur(10px);
+    }
+    .left{
+      padding:48px 42px;
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+      display:flex;flex-direction:column;justify-content:center;
+    }
+    .brand{display:inline-flex;align-items:center;gap:12px;margin-bottom:22px}
+    .brand-badge{
+      width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#19c2ff,#1f6bff);font-size:24px;font-weight:700;
+      box-shadow:0 12px 30px rgba(0,0,0,.22);
+    }
+    .brand-text h1{font-size:30px;font-weight:800;letter-spacing:.4px}
+    .brand-text p{color:rgba(255,255,255,.78);margin-top:4px;font-size:14px}
+    .headline{font-size:38px;line-height:1.18;font-weight:800;margin:18px 0 16px;max-width:520px}
+    .subtext{font-size:16px;line-height:1.8;color:rgba(255,255,255,.82);max-width:520px;margin-bottom:26px}
+    .feature-list{display:grid;grid-template-columns:1fr;gap:14px;margin-top:10px}
+    .feature{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);padding:14px 16px;border-radius:16px}
+    .feature strong{display:block;font-size:15px;margin-bottom:5px}
+    .feature span{font-size:13px;color:rgba(255,255,255,.75);line-height:1.6}
+    .right{background:#fff;color:#10233c;padding:42px 34px;display:flex;align-items:center;justify-content:center}
+    .form-card{width:100%;max-width:420px}
+    .form-top{margin-bottom:24px}
+    .form-top h2{font-size:30px;margin-bottom:8px;color:#0f2745}
+    .form-top p{font-size:14px;color:#667892;line-height:1.7}
+    .input-group{margin-bottom:18px}
+    .input-group label{display:block;margin-bottom:8px;font-size:14px;font-weight:700;color:#20344d}
+    .input-group input{
+      width:100%;height:54px;border:1px solid #d5dfeb;border-radius:14px;
+      padding:0 16px;font-size:15px;outline:none;transition:.25s ease;background:#f8fbff;
+    }
+    .input-group input:focus{border-color:#1d86ff;background:#fff;box-shadow:0 0 0 4px rgba(29,134,255,.10)}
+    .options{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+    .remember{display:flex;align-items:center;gap:8px;font-size:14px;color:#48617c}
+    .remember input{width:16px;height:16px;accent-color:#1573ff}
+    .hint{font-size:13px;color:#6b7f97}
+    .btn{
+      width:100%;height:56px;border:none;border-radius:16px;
+      background:linear-gradient(135deg,#12b9ff,#166bff);
+      color:#fff;font-size:16px;font-weight:800;cursor:pointer;
+      box-shadow:0 14px 35px rgba(22,107,255,.26);
+      transition:transform .18s ease,opacity .18s ease;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:disabled{opacity:.7;cursor:not-allowed;transform:none}
+    .message{margin-top:16px;padding:14px 15px;border-radius:14px;font-size:14px;line-height:1.6;display:none}
+    .message.success{display:block;background:#e9fff2;color:#137a41;border:1px solid #b8e7ca}
+    .message.error{display:block;background:#fff1f1;color:#c62828;border:1px solid #f2c2c2}
+    .footer-note{margin-top:18px;text-align:center;font-size:12px;color:#7c8ea4;line-height:1.7}
+    @media(max-width:900px){
+      .login-wrap{grid-template-columns:1fr}
+      .left{display:none}
+      .right{padding:34px 22px}
+    }
+  </style>
 </head>
 <body>
+  <div class="login-wrap">
+    <div class="left">
+      <div class="brand">
+        <div class="brand-badge">S</div>
+        <div class="brand-text">
+          <h1>SmartLearn</h1>
+          <p>Admin Control Center</p>
+        </div>
+      </div>
 
-<div class="form-page">
-<div class="form-box">
+      <div class="headline">
+        Secure admin access for managing students, exams, payments and reports.
+      </div>
 
-<h1>Admin Panel Login</h1>
-<p>Only authorized admin can access.</p>
+      <div class="subtext">
+        Sign in as an administrator to manage the entire SmartLearn system securely through a modern live portal.
+      </div>
 
-<form id="adminForm">
+      <div class="feature-list">
+        <div class="feature">
+          <strong>Student management</strong>
+          <span>View students, subscriptions, account statuses, and important registration details.</span>
+        </div>
 
-<input type="text" id="username"
-placeholder="Username" required>
+        <div class="feature">
+          <strong>Exam control</strong>
+          <span>Create exam links, control availability, and monitor student access.</span>
+        </div>
 
-<input type="password" id="password"
-placeholder="Password" required>
+        <div class="feature">
+          <strong>Payment overview</strong>
+          <span>Track payments, package plans, activations, and system usage easily.</span>
+        </div>
+      </div>
+    </div>
 
-<button type="submit" class="btn-main">
-Login Admin
-</button>
+    <div class="right">
+      <div class="form-card">
+        <div class="form-top">
+          <h2>Admin Log In</h2>
+          <p>Enter your admin credentials to access the SmartLearn admin dashboard.</p>
+        </div>
 
-</form>
+        <form id="adminLoginForm">
+          <div class="input-group">
+            <label for="email">Admin Email</label>
+            <input type="email" id="email" placeholder="Enter admin email" required />
+          </div>
 
-<p id="msg"></p>
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter password" required />
+          </div>
 
-</div>
-</div>
+          <div class="options">
+            <label class="remember">
+              <input type="checkbox" id="rememberMe" />
+              <span>Remember me</span>
+            </label>
 
-<script>
-document.getElementById("adminForm")
-.addEventListener("submit", async function(e){
+            <div class="hint">Only authorized admins allowed</div>
+          </div>
 
-e.preventDefault();
+          <button type="submit" class="btn" id="loginBtn">Log In as Admin</button>
+          <div id="message" class="message"></div>
+        </form>
 
-const username =
-document.getElementById("username").value;
+        <div class="footer-note">
+          SmartLearn Admin Portal • Secure access only
+        </div>
+      </div>
+    </div>
+  </div>
 
-const password =
-document.getElementById("password").value;
+  <script>
+    const form = document.getElementById('adminLoginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const messageBox = document.getElementById('message');
+    const rememberMe = document.getElementById('rememberMe');
 
-const res = await fetch("/admin-login",{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
-username,password
-})
-});
+    function showMessage(type, text){
+      messageBox.className = 'message ' + type;
+      messageBox.textContent = text;
+    }
 
-const data = await res.json();
+    function clearMessage(){
+      messageBox.className = 'message';
+      messageBox.textContent = '';
+    }
 
-document.getElementById("msg").innerHTML =
-data.message;
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedEmail = localStorage.getItem('smartlearn_admin_email');
+      const savedRemember = localStorage.getItem('smartlearn_admin_remember');
 
-if(data.success){
-localStorage.setItem("admin","true");
+      if(savedEmail && savedRemember === 'true'){
+        document.getElementById('email').value = savedEmail;
+        rememberMe.checked = true;
+      }
+    });
 
-setTimeout(()=>{
-window.location.href="admin-dashboard.html";
-},1000);
-}
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      clearMessage();
 
-});
-</script>
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
 
+      if(!email || !password){
+        showMessage('error', 'Please fill in admin email and password.');
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Logging in...';
+
+      try{
+        const res = await fetch('/admin/login', {
+          method:'POST',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if(!res.ok || !data.token){
+          showMessage('error', data.message || 'Admin login failed.');
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Log In as Admin';
+          return;
+        }
+
+        localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('adminUser', JSON.stringify(data.user || {}));
+
+        if(rememberMe.checked){
+          localStorage.setItem('smartlearn_admin_email', email);
+          localStorage.setItem('smartlearn_admin_remember', 'true');
+        }else{
+          localStorage.removeItem('smartlearn_admin_email');
+          localStorage.removeItem('smartlearn_admin_remember');
+        }
+
+        showMessage('success', 'Login successful. Redirecting to dashboard...');
+
+        setTimeout(() => {
+          window.location.href = '/admin-dashboard.html';
+        }, 700);
+
+      }catch(err){
+        showMessage('error', 'Server connection error. Please try again.');
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Log In as Admin';
+      }
+    });
+  </script>
 </body>
 </html>

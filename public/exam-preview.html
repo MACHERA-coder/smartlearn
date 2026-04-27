@@ -1,158 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Available Exams Preview</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SmartLearn Exam Preview</title>
 
 <style>
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,Helvetica,sans-serif;
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 body{
-min-height:100vh;
-padding:30px;
-background:linear-gradient(135deg,#04142e,#0a2f73,#1160d9);
-color:white;
+  min-height:100vh;
+  padding:30px;
+  background:linear-gradient(135deg,#04142e,#0a2f73,#1160d9);
+  color:white;
 }
 
 .container{
-max-width:1100px;
-margin:auto;
+  max-width:950px;
+  margin:auto;
 }
 
 .top{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:30px;
-flex-wrap:wrap;
-gap:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:30px;
+  flex-wrap:wrap;
+  gap:15px;
 }
 
 .top h1{
-font-size:42px;
-font-weight:800;
+  font-size:38px;
+  font-weight:800;
 }
 
 .top a{
-text-decoration:none;
-color:white;
-padding:12px 18px;
-border-radius:14px;
-background:rgba(255,255,255,.14);
+  text-decoration:none;
+  color:white;
+  padding:12px 18px;
+  border-radius:14px;
+  background:rgba(255,255,255,.14);
+  font-weight:700;
 }
 
-.hero{
-padding:30px;
-border-radius:28px;
-background:rgba(255,255,255,.09);
-margin-bottom:30px;
+.card{
+  background:white;
+  color:#0f172a;
+  padding:30px;
+  border-radius:28px;
+  box-shadow:0 18px 40px rgba(0,0,0,.22);
 }
 
-.hero h2{
-font-size:34px;
-margin-bottom:14px;
+.badge{
+  display:inline-block;
+  padding:8px 14px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:800;
+  margin-bottom:16px;
 }
 
-.hero p{
-font-size:18px;
-line-height:1.8;
-color:#dbeafe;
+.badge.live{
+  background:#dbeafe;
+  color:#1d4ed8;
 }
 
-.list{
-display:grid;
-gap:18px;
+.badge.scheduled{
+  background:#e0e7ff;
+  color:#4338ca;
 }
 
-.exam{
-background:white;
-color:#0f172a;
-padding:24px;
-border-radius:24px;
-box-shadow:0 18px 35px rgba(0,0,0,.18);
+.card h2{
+  font-size:34px;
+  margin-bottom:14px;
 }
 
-.exam h3{
-font-size:28px;
-margin-bottom:10px;
+.card p{
+  color:#475569;
+  font-size:16px;
+  line-height:1.8;
+  margin-bottom:16px;
 }
 
-.exam p{
-color:#475569;
-font-size:16px;
-margin-bottom:16px;
+.info{
+  display:grid;
+  gap:10px;
+  margin:18px 0 24px;
+}
+
+.info div{
+  background:#f1f5f9;
+  border-radius:14px;
+  padding:14px;
+  color:#334155;
+  font-size:15px;
 }
 
 .btn{
-display:inline-block;
-padding:14px 18px;
-border-radius:16px;
-background:#e2e8f0;
-font-weight:800;
-text-decoration:none;
-color:#334155;
+  display:inline-block;
+  padding:15px 20px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+  box-shadow:0 12px 25px rgba(37,99,235,.25);
+}
+.upgrade-btn{
+  background:linear-gradient(135deg,#7c3aed,#a855f7);
 }
 
-.note{
-margin-top:28px;
-padding:18px;
-border-radius:18px;
-background:rgba(255,255,255,.1);
-font-weight:700;
+.scheduled-btn{
+  background:linear-gradient(135deg,#64748b,#475569);
+}
+.loading,
+.error{
+  background:rgba(255,255,255,.12);
+  padding:20px;
+  border-radius:18px;
+  font-weight:700;
+  line-height:1.7;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
 
-<div class="top">
-<h1>Available Exams</h1>
-<a href="/student-dashboard">Back to Dashboard</a>
-</div>
+  <div class="top">
+    <h1>Exam Preview</h1>
+    <a href="/student-dashboard.html">Back to Dashboard</a>
+  </div>
 
-<div class="hero">
-<h2>Explore Examination Opportunities</h2>
-<p>
-Preview examinations available on SmartLearn platform. 
-Subscribe first to unlock full access and start exams.
-</p>
-</div>
-
-<div class="list">
-
-<div class="exam">
-<h3>Biology Mock Exam</h3>
-<p>Comprehensive biology assessment for revision.</p>
-<a href="/subscription.html" class="btn">Subscribe to Unlock</a>
-</div>
-
-<div class="exam">
-<h3>Chemistry Practice Exam</h3>
-<p>Timed chemistry mock test with quality questions.</p>
-<a href="/subscription.html" class="btn">Subscribe to Unlock</a>
-</div>
-
-<div class="exam">
-<h3>Physics Final Preparation</h3>
-<p>Advanced physics preparation examination.</p>
-<a href="/subscription.html" class="btn">Subscribe to Unlock</a>
-</div>
+  <div id="previewBox" class="loading">
+    Loading exam preview...
+  </div>
 
 </div>
 
-<div class="note">
-Students with active subscription can access real exams in the Exam Access page.
-</div>
+<script>
+const previewBox = document.getElementById("previewBox");
 
-</div>
+function getExamId(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get("examId");
+}
+
+function getBadge(status){
+  const value = String(status || "").toLowerCase();
+
+  if(value === "live"){
+    return `<span class="badge live">Live Exam</span>`;
+  }
+
+  if(value === "scheduled"){
+    return `<span class="badge scheduled">Scheduled Exam</span>`;
+  }
+
+  return `<span class="badge scheduled">${status || "Exam"}</span>`;
+}
+
+async function fetchJson(url){
+  const res = await fetch(url,{
+    credentials:"include",
+    cache:"no-store"
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if(!res.ok){
+    throw new Error(data.message || "Request failed.");
+  }
+
+  return data;
+}
+function getActionButton(exam){
+  const accessType = String(exam.access_type || "").toLowerCase();
+  const status = String(exam.status || "").toLowerCase();
+
+  if(accessType === "open" && status === "live"){
+    return `
+      <a href="/student/secure-exam/${encodeURIComponent(exam.id)}" class="btn">
+        Start Examination
+      </a>
+    `;
+  }
+
+  if(accessType === "open" && status === "scheduled"){
+    return `
+      <a href="/student-dashboard.html" class="btn scheduled-btn">
+        Examination Scheduled
+      </a>
+    `;
+  }
+
+  if(accessType === "upgrade"){
+    return `
+      <a href="/subscription.html" class="btn upgrade-btn">
+        Upgrade to Unlock
+      </a>
+    `;
+  }
+
+  return `
+    <a href="/subscription.html" class="btn">
+      Subscribe to Unlock
+    </a>
+  `;
+}
+async function loadPreview(){
+  const examId = getExamId();
+
+  if(!examId){
+    previewBox.className = "error";
+    previewBox.textContent = "Exam preview not found.";
+    return;
+  }
+
+  try{
+    const data = await fetchJson("/student/exam-links");
+    const exams = Array.isArray(data.exams) ? data.exams : [];
+    const exam = exams.find(x => String(x.id) === String(examId));
+
+    if(!exam){
+      previewBox.className = "error";
+      previewBox.textContent = "This exam preview is no longer available.";
+      return;
+    }
+
+    const status = String(exam.status || "").toLowerCase();
+
+    const statusMessage = status === "live"
+      ? "This exam is currently live on SmartLearn."
+      : "This exam is scheduled and will be available soon.";
+
+    previewBox.className = "card";
+    previewBox.innerHTML = `
+      ${getBadge(exam.status)}
+
+      <h2>${exam.title || "Untitled Exam"}</h2>
+
+      <p>${statusMessage}</p>
+
+      <div class="info">
+        <div><strong>Package:</strong> ${exam.package || "—"}</div>
+        <div><strong>Live Window:</strong> ${exam.live_window || "—"}</div>
+        <div><strong>Description:</strong> ${exam.description || "No description available."}</div>
+      </div>
+
+      ${getActionButton(exam)}
+    `;
+
+  }catch(error){
+    previewBox.className = "error";
+    previewBox.textContent = error.message || "Failed to load exam preview.";
+  }
+}
+
+loadPreview();
+</script>
 
 </body>
 </html>

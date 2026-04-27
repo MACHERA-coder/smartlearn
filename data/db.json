@@ -1,0 +1,145 @@
+{
+  "admins": [
+    {
+      "id": 1,
+      "name": "Main Admin",
+      "email": "admin@smartlearn.co.tz",
+      "password": "123456",
+      "role": "super_admin",
+      "status": "active"
+    }
+  ],
+  "students": [
+    {
+      "id": 1,
+      "name": "John Mwita",
+      "email": "john@example.com",
+      "phone": "0712345678",
+      "password": "123456",
+      "package": "Premium",
+      "status": "Active",
+      "created_at": "2026-04-23T08:21:52.233Z",
+      "updated_at": "2026-04-23T14:42:05.523Z"
+    },
+    {
+      "id": 2,
+      "name": "Neema Paul",
+      "email": "neema@example.com",
+      "phone": "0744556677",
+      "password": "123456",
+      "package": "Standard",
+      "status": "Active",
+      "created_at": "2026-04-23T08:21:52.233Z",
+      "updated_at": "2026-04-23T12:08:03.131Z"
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": 1,
+      "student_id": 1,
+      "student_name": "John Mwita",
+      "email": "john@example.com",
+      "package": "Premium",
+      "start_date": "2026-04-23",
+      "end_date": "2026-05-23",
+      "status": "Active",
+      "created_at": "2026-04-23T08:21:52.233Z",
+      "updated_at": "2026-04-23T14:43:46.009Z"
+    },
+    {
+      "id": 2,
+      "student_id": 2,
+      "student_name": "Neema Paul",
+      "email": "neema@example.com",
+      "package": "Standard",
+      "start_date": "2026-04-23",
+      "end_date": "2026-05-23",
+      "status": "Active",
+      "created_at": "2026-04-23T08:21:52.233Z",
+      "updated_at": "2026-04-23T13:39:48.896Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": 1,
+      "student_id": 1,
+      "student_name": "John Mwita",
+      "email": "john@example.com",
+      "amount": "TZS 30000",
+      "method": "M-Pesa",
+      "reference": "MPX12345",
+      "date": "2026-04-20",
+      "status": "Approved",
+      "created_at": "2026-04-23T08:21:52.233Z",
+      "updated_at": "2026-04-23T14:43:46.009Z"
+    },
+    {
+      "id": 2,
+      "student_id": 2,
+      "student_name": "Neema Paul",
+      "email": "neema@example.com",
+      "amount": "TZS 15000",
+      "method": "Mixx by Yas",
+      "reference": "YAS98822",
+      "date": "2026-04-22",
+      "status": "Approved",
+      "created_at": "2026-04-23T08:21:52.233Z",
+      "updated_at": "2026-04-23T13:39:48.895Z"
+    }
+  ],
+  "examLinks": [
+    {
+      "id": 2,
+      "title": "Anatomy Revision Quiz",
+      "package": "All",
+      "url": "https://example.com/exam2",
+      "status": "draft",
+      "note": "",
+      "description": "General revision quiz.",
+      "created_at": "2026-04-23T08:21:52.233Z",
+      "updated_at": "2026-04-23T13:39:06.146Z",
+      "start_at": "",
+      "end_at": ""
+    },
+    {
+      "id": 3,
+      "title": "Anemia Test",
+      "package": "All",
+      "url": "https://testmoz.com/q/15188940",
+      "status": "live",
+      "note": "Take this test to test your understanding on Anemia",
+      "description": "Anemia Test",
+      "created_at": "2026-04-23T08:49:27.658Z",
+      "updated_at": "2026-04-23T13:39:12.750Z",
+      "start_at": "",
+      "end_at": ""
+    },
+    {
+      "id": 4,
+      "title": "Anemia Test",
+      "package": "Basic",
+      "url": "https://testmoz.com/q/15188940",
+      "status": "live",
+      "start_at": "2026-05-14T22:46",
+      "end_at": "2026-05-23T18:46",
+      "description": "aaaa",
+      "created_at": "2026-04-23T12:43:52.361Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": 1,
+      "type": "admin",
+      "admin_id": 1,
+      "token": "b9p81x7crflmob99zyoo80e452yg8",
+      "created_at": "2026-04-23T09:04:57.168Z"
+    },
+    {
+      "id": 2,
+      "type": "student",
+      "student_id": 1,
+      "token": "lvozuvocxhemobld9jx6bfjejpnolc",
+      "created_at": "2026-04-23T14:43:24.957Z"
+    }
+  ]
+}

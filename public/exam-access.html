@@ -1,485 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SmartLearn Exam Access</title>
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SmartLearn Exams</title>
 
-    :root{
-      --bg-1:#04142e;
-      --bg-2:#0a2f73;
-      --bg-3:#1160d9;
-      --text:#ffffff;
-      --text-soft:#dbeafe;
-      --dark:#0f172a;
-      --muted:#64748b;
-      --primary:#2563eb;
-      --primary-2:#60a5fa;
-      --success:#16a34a;
-      --success-bg:#dcfce7;
-      --danger:#dc2626;
-      --danger-bg:#fee2e2;
-      --warning:#92400e;
-      --warning-bg:#fef3c7;
-      --shadow:0 20px 50px rgba(15,23,42,0.12);
-    }
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
 
-    body{
-      min-height:100vh;
-      color:var(--text);
-      background:
-        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
-        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
-        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
-        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
-      overflow-x:hidden;
-      padding:22px;
-    }
+body{
+background:linear-gradient(135deg,#08255c,#1f56c5);
+min-height:100vh;
+padding:22px;
+color:#fff;
+}
 
-    .container{
-      max-width:1240px;
-      margin:0 auto;
-    }
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:18px;
+gap:10px;
+flex-wrap:wrap;
+}
 
-    .topbar{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:14px;
-      flex-wrap:wrap;
-      margin-bottom:22px;
-    }
+.logo{
+font-size:28px;
+font-weight:900;
+}
 
-    .topbar h1{
-      font-size:34px;
-      font-weight:800;
-    }
+.btns{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
 
-    .top-actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-    }
+.topbtn{
+background:#315fb8;
+color:#fff;
+padding:12px 22px;
+border:none;
+border-radius:14px;
+font-weight:700;
+cursor:pointer;
+text-decoration:none;
+}
 
-    .top-actions a{
-      text-decoration:none;
-      padding:12px 16px;
-      border-radius:14px;
-      font-weight:700;
-      font-size:14px;
-      color:#fff;
-      background:rgba(255,255,255,0.12);
-      border:1px solid rgba(255,255,255,0.14);
-    }
+.hero{
+background:rgba(255,255,255,.12);
+padding:28px;
+border-radius:24px;
+margin-bottom:24px;
+}
 
-    .hero{
-      position:relative;
-      overflow:hidden;
-      border-radius:28px;
-      padding:32px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
-      border:1px solid rgba(255,255,255,0.16);
-      box-shadow:0 24px 60px rgba(0,0,0,0.18);
-      backdrop-filter: blur(18px);
-      margin-bottom:22px;
-    }
+.hero h1{
+font-size:30px;
+font-weight:900;
+margin-bottom:10px;
+}
 
-    .hero::before{
-      content:"";
-      position:absolute;
-      width:220px;
-      height:220px;
-      border-radius:50%;
-      top:-70px;
-      right:-60px;
-      background:rgba(255,255,255,0.08);
-    }
+.hero p{
+opacity:.95;
+}
 
-    .badge{
-      display:inline-block;
-      padding:10px 16px;
-      border-radius:999px;
-      background:rgba(255,255,255,0.12);
-      border:1px solid rgba(255,255,255,0.12);
-      font-size:13px;
-      font-weight:700;
-      color:#e0f2fe;
-      margin-bottom:18px;
-    }
+.card{
+background:#fff;
+color:#111;
+border-radius:26px;
+padding:24px;
+}
 
-    .hero h2{
-      font-size:38px;
-      line-height:1.1;
-      margin-bottom:14px;
-      font-weight:800;
-      max-width:760px;
-    }
+.section-title{
+font-size:24px;
+font-weight:900;
+margin-bottom:8px;
+}
 
-    .hero p{
-      font-size:16px;
-      line-height:1.8;
-      color:var(--text-soft);
-      max-width:780px;
-    }
+.section-sub{
+color:#667085;
+margin-bottom:20px;
+}
 
-    .main-grid{
-      display:grid;
-      grid-template-columns:1.1fr 0.9fr;
-      gap:22px;
-    }
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:18px;
+}
 
-    .card{
-      background:#ffffff;
-      color:var(--dark);
-      border-radius:24px;
-      padding:24px;
-      box-shadow:var(--shadow);
-      border:1px solid rgba(226,232,240,0.95);
-    }
+.exam{
+border:1px solid #dbe3f0;
+border-radius:22px;
+padding:20px;
+background:#f8fbff;
+}
 
-    .card h3{
-      font-size:24px;
-      margin-bottom:18px;
-    }
+.badge{
+display:inline-block;
+padding:8px 14px;
+border-radius:999px;
+font-size:12px;
+font-weight:900;
+margin-bottom:14px;
+}
 
-    .message{
-      padding:14px 16px;
-      border-radius:16px;
-      font-size:14px;
-      font-weight:700;
-      line-height:1.7;
-      margin-bottom:16px;
-      display:none;
-    }
+.live{
+background:#e8fff1;
+color:#0c8a45;
+}
 
-    .message.success{
-      display:block;
-      background:#dcfce7;
-      color:#166534;
-      border:1px solid #86efac;
-    }
+.preview{
+background:#f0e9ff;
+color:#7a2cff;
+}
 
-    .message.error{
-      display:block;
-      background:#fee2e2;
-      color:#991b1b;
-      border:1px solid #fca5a5;
-    }
+.wait{
+background:#fff4d7;
+color:#b26a00;
+}
 
-    .message.warning{
-      display:block;
-      background:#fef3c7;
-      color:#92400e;
-      border:1px solid #fcd34d;
-    }
+.exam h3{
+font-size:20px;
+margin-bottom:10px;
+}
 
-    .exam-box{
-      background:#f8fafc;
-      border:1px solid #e2e8f0;
-      border-radius:20px;
-      padding:20px;
-      margin-bottom:18px;
-    }
+.meta{
+line-height:1.7;
+margin-bottom:16px;
+}
 
-    .exam-box small{
-      display:block;
-      color:var(--muted);
-      font-size:13px;
-      margin-bottom:8px;
-    }
+.action{
+display:block;
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+font-size:17px;
+font-weight:900;
+cursor:pointer;
+text-decoration:none;
+text-align:center;
+}
 
-    .exam-title{
-      font-size:30px;
-      font-weight:800;
-      color:#0f172a;
-      line-height:1.3;
-      margin-bottom:10px;
-    }
+.open{
+background:linear-gradient(90deg,#0bba63,#10d37a);
+color:#fff;
+}
 
-    .exam-desc{
-      color:#475569;
-      font-size:15px;
-      line-height:1.8;
-    }
+.upgrade{
+background:linear-gradient(90deg,#7a2cff,#a53dff);
+color:#fff;
+}
 
-    .action-row{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-top:18px;
-    }
+.locked{
+background:#cfd8e6;
+color:#445;
+cursor:not-allowed;
+}
 
-    .action-btn{
-      display:inline-block;
-      text-decoration:none;
-      padding:15px 18px;
-      border-radius:18px;
-      font-weight:800;
-      font-size:16px;
-      border:none;
-      cursor:pointer;
-      background:linear-gradient(90deg, var(--primary-2), var(--primary));
-      color:#fff;
-      box-shadow:0 14px 28px rgba(37,99,235,0.28);
-    }
+.empty{
+padding:22px;
+background:#eef4ff;
+border-radius:18px;
+font-weight:700;
+color:#2452c8;
+}
 
-    .secondary-btn{
-      display:inline-block;
-      text-decoration:none;
-      padding:14px 16px;
-      border-radius:16px;
-      font-weight:700;
-      font-size:14px;
-      color:#1d4ed8;
-      background:#eff6ff;
-      border:1px solid #bfdbfe;
-    }
-
-    .mini-grid{
-      display:grid;
-      gap:14px;
-    }
-
-    .mini-box{
-      background:#f8fafc;
-      border:1px solid #e2e8f0;
-      border-radius:18px;
-      padding:16px;
-    }
-
-    .mini-box small{
-      display:block;
-      color:var(--muted);
-      margin-bottom:8px;
-      font-size:13px;
-    }
-
-    .mini-box strong{
-      font-size:16px;
-      line-height:1.6;
-      display:block;
-    }
-
-    .status-pill{
-      display:inline-block;
-      padding:8px 14px;
-      border-radius:999px;
-      font-size:13px;
-      font-weight:800;
-      margin-top:8px;
-    }
-
-    .status-active{
-      background:var(--success-bg);
-      color:var(--success);
-    }
-
-    .status-inactive{
-      background:var(--warning-bg);
-      color:var(--warning);
-    }
-
-    .info-note{
-      margin-top:16px;
-      padding:16px;
-      border-radius:18px;
-      background:#eff6ff;
-      border:1px solid #bfdbfe;
-      color:#1e3a8a;
-      font-size:14px;
-      line-height:1.7;
-      font-weight:700;
-    }
-
-    @media (max-width: 980px){
-      .main-grid{
-        grid-template-columns:1fr;
-      }
-
-      .hero h2{
-        font-size:30px;
-      }
-    }
-
-    @media (max-width: 680px){
-      body{
-        padding:16px;
-      }
-
-      .hero{
-        padding:24px 20px;
-      }
-
-      .hero h2{
-        font-size:26px;
-      }
-
-      .card{
-        padding:20px;
-      }
-
-      .exam-title{
-        font-size:24px;
-      }
-    }
-  </style>
+@media(max-width:700px){
+.logo{font-size:22px;}
+.hero h1{font-size:24px;}
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <div class="topbar">
-      <h1>Exam Access</h1>
-      <div class="top-actions">
-        <a href="/student-dashboard">Back to Dashboard</a>
-        <a href="/subscription.html">Subscription</a>
-      </div>
-    </div>
 
-    <section class="hero">
-      <div class="badge">SmartLearn Examination Window</div>
-      <h2>Open your available examination based on your subscription status.</h2>
-      <p>
-        Students with active subscription and completed payment can start the available exam directly. Students without active subscription will be guided to subscribe first.
-      </p>
-    </section>
+<div class="topbar">
+<div class="logo" id="pageTitle">Exams</div>
 
-    <section class="main-grid">
-      <div class="card">
-        <h3>Available Examination</h3>
-        <div id="messageBox" class="message"></div>
+<div class="btns">
+<a href="student-dashboard.html" class="topbtn">Back to Dashboard</a>
+<a href="subscription.html" class="topbtn">Subscription</a>
+</div>
+</div>
 
-        <div class="exam-box">
-          <small>Exam Title</small>
-          <div id="examTitle" class="exam-title">Loading...</div>
-          <div class="exam-desc" id="examDesc">
-            Checking your exam access status...
-          </div>
-        </div>
+<div class="hero">
+<h1 id="heroTitle">Loading...</h1>
+<p id="heroText">Please wait...</p>
+</div>
 
-        <div class="action-row" id="examActionArea"></div>
+<div class="card">
+<div class="section-title" id="sectionTitle">Available Exams</div>
+<div class="section-sub">Choose one exam below.</div>
 
-        <div class="info-note">
-          Only students with active subscription and completed payment can start the examination.
-        </div>
-      </div>
+<div class="grid" id="examGrid">
+<div class="empty">Loading exams...</div>
+</div>
+</div>
 
-      <div class="card">
-        <h3>Student Status</h3>
+<script>
+const params = new URLSearchParams(location.search);
+const packageName = params.get("package") || "";
+const type = params.get("type") || "preview";
 
-        <div class="mini-grid">
-          <div class="mini-box">
-            <small>Student ID</small>
-            <strong id="studentIdText">-</strong>
-          </div>
+const pageTitle = document.getElementById("pageTitle");
+const heroTitle = document.getElementById("heroTitle");
+const heroText = document.getElementById("heroText");
+const sectionTitle = document.getElementById("sectionTitle");
+const examGrid = document.getElementById("examGrid");
 
-          <div class="mini-box">
-            <small>Student Name</small>
-            <strong id="studentNameText">-</strong>
-          </div>
+pageTitle.textContent =
+type === "live"
+? "Live Exams"
+: type === "scheduled"
+? "Scheduled Exams"
+: "Preview Exams";
 
-          <div class="mini-box">
-            <small>Subscription Status</small>
-            <strong id="subscriptionText">Inactive</strong>
-            <div id="statusBadge" class="status-pill status-inactive">Inactive</div>
-          </div>
+heroTitle.textContent =
+type === "live"
+? packageName + " Package Live Exams"
+: type === "scheduled"
+? packageName + " Package Scheduled Exams"
+: packageName + " Package Preview Exams";
 
-          <div class="mini-box">
-            <small>Current Package</small>
-            <strong id="currentPackageText">No package selected</strong>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
+heroText.textContent =
+type === "live"
+? "Open any available live examination below."
+: type === "scheduled"
+? "Upcoming exams that will open soon."
+: "Preview exams available for this package.";
 
-  <script>
-    const studentId = localStorage.getItem("studentId");
-    const studentName = localStorage.getItem("studentName");
-    const studentEmail = localStorage.getItem("studentEmail");
-    const currentPackageName = localStorage.getItem("studentPackageName") || "No package selected";
+sectionTitle.textContent =
+type === "live"
+? "Available Live Exams"
+: type === "scheduled"
+? "Available Scheduled Exams"
+: "Available Preview Exams";
+function esc(v){
+return String(v || "").replace(/[<>&"]/g,m=>({
+"<":"&lt;",
+">":"&gt;",
+"&":"&amp;",
+'"':"&quot;"
+}[m]));
+}
 
-    if (!studentId || !studentEmail) {
-      window.location.href = "/login";
-    }
+function getStudentPackage(){
+return (
+localStorage.getItem("studentPackage") ||
+localStorage.getItem("package") ||
+localStorage.getItem("activePackage") ||
+""
+).trim();
+}
 
-    const examTitle = document.getElementById("examTitle");
-    const examDesc = document.getElementById("examDesc");
-    const messageBox = document.getElementById("messageBox");
-    const examActionArea = document.getElementById("examActionArea");
-    const studentIdText = document.getElementById("studentIdText");
-    const studentNameText = document.getElementById("studentNameText");
-    const subscriptionText = document.getElementById("subscriptionText");
-    const statusBadge = document.getElementById("statusBadge");
-    const currentPackageText = document.getElementById("currentPackageText");
+async function getAllExams(){
 
-    studentIdText.textContent = studentId || "-";
-    studentNameText.textContent = studentName || "-";
-    currentPackageText.textContent = currentPackageName || "No package selected";
+const token =
+localStorage.getItem("studentToken") ||
+localStorage.getItem("token") ||
+localStorage.getItem("authToken") ||
+"";
 
-    function showMessage(text, type) {
-      messageBox.className = `message ${type}`;
-      messageBox.textContent = text;
-    }
+const res = await fetch("/student/exam-links?t=" + Date.now(),{
+headers:{
+Authorization:`Bearer ${token}`
+}
+});
 
-    function paintStatus(status) {
-      const value = (status || "inactive").toLowerCase();
-      subscriptionText.textContent = value === "active" ? "Active" : "Inactive";
-      statusBadge.textContent = value === "active" ? "Active" : "Inactive";
-      statusBadge.classList.remove("status-active", "status-inactive");
-      statusBadge.classList.add(value === "active" ? "status-active" : "status-inactive");
-    }
+const data = await res.json();
 
-    async function checkExamAccess() {
-      try {
-        const response = await fetch(`/api/exam-access/${studentId}`);
-        const data = await response.json();
+if(!res.ok || !data.success){
+throw new Error(data.message || "Failed to load exam links");
+}
 
-        examTitle.textContent = data.examTitle || "No exam available";
-        paintStatus(data.subscriptionStatus || "inactive");
-        localStorage.setItem("studentSubscriptionStatus", data.subscriptionStatus || "inactive");
+return data.examLinks || [];
+}
 
-        if (data.success && data.examUrl) {
-          showMessage(data.message || "Exam access granted.", "success");
-          examDesc.textContent = "Your subscription is active. You can now start the available examination.";
-          examActionArea.innerHTML = `
-            <a class="action-btn" href="${data.examUrl}" target="_blank" rel="noopener noreferrer">
-              Start Exam
-            </a>
-            <a class="secondary-btn" href="/student-dashboard">
-              Back to Dashboard
-            </a>
-          `;
-        } else {
-          showMessage(data.message || "Subscription inactive. Subscribe first.", "warning");
-          examDesc.textContent = "This examination is available on the platform, but full access is unlocked only after successful subscription and payment.";
-          examActionArea.innerHTML = `
-            <a class="action-btn" href="/subscription.html">
-              Subscribe First
-            </a>
-            <a class="secondary-btn" href="/student-dashboard">
-              Back to Dashboard
-            </a>
-          `;
-        }
-      } catch (error) {
-        showMessage("Failed to check exam access.", "error");
-        examTitle.textContent = "No exam available";
-        examDesc.textContent = "Unable to verify exam access at the moment.";
-        examActionArea.innerHTML = `
-          <a class="secondary-btn" href="/student-dashboard">
-            Back to Dashboard
-          </a>
-        `;
-      }
-    }
+function remaining(openTime){
+  if(!openTime) return "Waiting schedule";
 
-    checkExamAccess();
-  </script>
+  const target = new Date(openTime).getTime();
+  if(Number.isNaN(target)) return "Waiting schedule";
+
+  let diff = target - Date.now();
+
+  if(diff <= 0) return "Now open";
+
+  const days = Math.floor(diff / 86400000);
+  diff %= 86400000;
+
+  const hrs = Math.floor(diff / 3600000);
+  diff %= 3600000;
+
+  const mins = Math.floor(diff / 60000);
+  diff %= 60000;
+
+  const secs = Math.floor(diff / 1000);
+
+  if(days > 0){
+    return `${days}d ${hrs}h ${mins}m ${secs}s`;
+  }
+
+  return `${hrs}h ${mins}m ${secs}s`;
+}
+
+async function loadData(){
+
+try{
+
+const all = await getAllExams();
+console.log("FRONTEND EXAMS:", all);
+console.log("PAGE TYPE:", type, "PACKAGE:", packageName);
+const studentPackage = getStudentPackage();
+
+const filtered = all.filter(x => {
+  const pkg = String(x.package || "").trim().toLowerCase();
+  const status = String(
+  x.status || x.base_status || ""
+).trim().toLowerCase();
+console.log(x.title, status);
+  const wantedPkg = String(packageName || "").trim().toLowerCase();
+  const wantedType = String(type || "").trim().toLowerCase();
+
+  if (wantedType === "live") {
+    return pkg.includes(wantedPkg) && status === "live";
+  }
+
+  if (wantedType === "scheduled") {
+    return pkg.includes(wantedPkg) && status === "scheduled";
+  }
+
+  if (wantedType === "preview") {
+    return pkg !== wantedPkg;
+  }
+
+  return false;
+});
+
+examGrid.innerHTML = filtered.map(exam=>{
+
+const title = esc(exam.title || exam.name || "Exam");
+const status = String(exam.status || "").toLowerCase();
+const link = exam.link || exam.url || "#";
+const owns = type !== "preview";
+
+if(owns && status === "live"){
+return `
+<div class="exam">
+<div class="badge live">LIVE NOW</div>
+<h3>${title}</h3>
+<div class="meta">
+Package: <b>${esc(packageName)}</b><br>
+Status: <b>Live</b>
+</div>
+<a href="${link}" target="_blank" class="action open">Open Exam</a>
+</div>`;
+}
+
+if(owns && status === "scheduled"){
+return `
+<div class="exam">
+<div class="badge wait">SCHEDULED</div>
+<h3>${title}</h3>
+<div class="meta">
+Package: <b>${esc(packageName)}</b><br>
+Opens In: <b class="countdown" data-time="${exam.open_time || exam.open_time || exam.open_at || exam.start_at || exam.start_time || exam.exam_date || exam.date || ""}">Calculating...</b>
+</div>
+<button class="action locked" disabled>Opens soon</button>
+</div>`;
+}
+
+return `
+<div class="exam">
+<div class="badge preview">PREVIEW</div>
+<h3>${title}</h3>
+<div class="meta">
+Package: <b>${esc(packageName)}</b><br>
+Status: <b>${esc(status || "Preview")}</b>
+</div>
+<a href="subscription.html" class="action upgrade">Upgrade to Access ${esc(packageName)} Package</a>
+</div>`;
+
+}).join("");
+
+startCountdown();
+
+}catch(err){
+console.log(err);
+examGrid.innerHTML =
+'<div class="empty">Failed to load exams.</div>';
+}
+}
+
+function startCountdown(){
+
+setInterval(()=>{
+
+document.querySelectorAll(".countdown").forEach(el=>{
+
+const t = el.dataset.time;
+
+if(!t){
+el.textContent = "Waiting schedule";
+return;
+}
+
+el.textContent = remaining(t);
+if(remaining(t) === "Now open"){
+  const card = el.closest(".exam");
+  const openBtn = card?.querySelector("a.open");
+
+  if(openBtn && openBtn.href){
+    openBtn.click();
+  }else{
+    setTimeout(() => {
+      window.location.href = `/exam-access.html?package=${encodeURIComponent(packageName)}&type=live`;
+    }, 1000);
+  }
+}
+});
+
+},1000);
+
+}
+
+loadData();
+</script>
+
 </body>
 </html>

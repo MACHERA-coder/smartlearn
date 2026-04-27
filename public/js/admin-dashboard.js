@@ -1,500 +1,248 @@
-window.addEventListener("load", function () {
-  const tabButtons = document.querySelectorAll(".tab-btn");
-  const panels = document.querySelectorAll(".panel");
+console.log("SmartLearn Admin JS Loaded");
 
-  let revenueChartInstance = null;
-  let subscriptionChartInstance = null;
-  let allPackages = [];
-
-  function openPanel(panelId) {
-    panels.forEach((panel) => panel.classList.remove("active"));
-    tabButtons.forEach((btn) => btn.classList.remove("active"));
-
-    const targetPanel = document.getElementById(panelId);
-    const activeButton = document.querySelector(`.tab-btn[data-tab="${panelId}"]`);
-
-    if (targetPanel) targetPanel.classList.add("active");
-    if (activeButton) activeButton.classList.add("active");
-  }
-
-  tabButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      const panelId = this.getAttribute("data-tab");
-      openPanel(panelId);
-    });
-  });
-
-  function statusBadge(status) {
-    const value = (status || "").toLowerCase();
-    return `<span class="status ${value}">${status || "-"}</span>`;
-  }
-
-  async function safeJson(url, options = {}) {
-    const response = await fetch(url, options);
-    const text = await response.text();
-    return JSON.parse(text);
-  }
-
-  function showMessage(element, text, type) {
-    if (!element) return;
-    element.className = "message " + type;
-    element.textContent = text;
-
-    setTimeout(() => {
-      element.className = "message";
-      element.textContent = "";
-    }, 4000);
-  }
-
-  function renderRevenueChart(totalRevenue, paidStudents, pendingPayments) {
-    const canvas = document.getElementById("revenueChart");
-    if (!canvas) return;
-
-    if (revenueChartInstance) {
-      revenueChartInstance.destroy();
-    }
-
-    revenueChartInstance = new Chart(canvas, {
-      type: "bar",
-      data: {
-        labels: ["Revenue", "Paid Students", "Pending Payments"],
-        datasets: [
-          {
-            label: "Business Overview",
-            data: [totalRevenue, paidStudents, pendingPayments]
-          }
-        ]
+(function () {
+  function requestJson(url, options = {}) {
+    return fetch(url, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: true } },
-        scales: { y: { beginAtZero: true } }
+      ...options
+    }).then(async (response) => {
+      let data = {};
+      try {
+        data = await response.json();
+      } catch (error) {
+        data = {};
       }
+
+      if (!response.ok) {
+        throw new Error(data.message || "Request failed.");
+      }
+
+      return data;
     });
   }
 
-  function renderSubscriptionChart(activeSubscriptions, inactiveSubscriptions) {
-    const canvas = document.getElementById("subscriptionChart");
-    if (!canvas) return;
+  async function updatePaymentStatus(id, status) {
+    const result = await requestJson(`/admin/payments/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({ status })
+    });
 
-    if (subscriptionChartInstance) {
-      subscriptionChartInstance.destroy();
+    alert(result.message || "Payment updated successfully.");
+    await window.loadDashboardData();
+    window.showSection("paymentsSection");
+  }
+
+  async function changeStudentStatus(id, status) {
+    const result = await requestJson(`/admin/students/${id}/status`, {
+      method: "PUT",
+      body: JSON.stringify({ status })
+    });
+
+    alert(result.message || "Student status updated successfully.");
+    await window.loadDashboardData();
+    window.showSection("studentsSection");
+  }
+
+  async function deleteStudent(id) {
+    const confirmed = confirm("Are you sure you want to delete this student?");
+    if (!confirmed) return;
+
+    const result = await requestJson(`/admin/students/${id}`, {
+      method: "DELETE"
+    });
+
+    alert(result.message || "Student deleted successfully.");
+    await window.loadDashboardData();
+    window.showSection("studentsSection");
+  }
+
+  async function updateExamLink(id, payload) {
+    const result = await requestJson(`/admin/exam-links/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload)
+    });
+
+    alert(result.message || "Exam link updated successfully.");
+    await window.loadDashboardData();
+    window.showSection("examLinksSection");
+  }
+
+  async function deleteExamLink(id) {
+    const confirmed = confirm("Are you sure you want to delete this exam link?");
+    if (!confirmed) return;
+
+    const result = await requestJson(`/admin/exam-links/${id}`, {
+      method: "DELETE"
+    });
+
+    alert(result.message || "Exam link deleted successfully.");
+    await window.loadDashboardData();
+    window.showSection("examLinksSection");
+  }
+
+  function getExamById(id) {
+    if (!window.dashboardData || !Array.isArray(window.dashboardData.examLinks)) return null;
+    return window.dashboardData.examLinks.find(item => Number(item.id) === Number(id)) || null;
+  }
+
+  async function editExamLink(exam) {
+    const title = prompt("Edit Exam Title:", exam.title || "");
+    if (title === null) return;
+
+    const packageName = prompt("Edit Package (Basic / Standard / Premium / All):", exam.package || "All");
+    if (packageName === null) return;
+
+    const url = prompt("Edit Exam URL:", exam.url || "");
+    if (url === null) return;
+
+    const status = prompt("Edit Base Status (live / draft / closed):", String(exam.base_status || exam.status || "draft").toLowerCase());
+    if (status === null) return;
+
+    const startAt = prompt("Edit Go Live At (example: 2026-04-23T18:00, leave empty if none):", exam.start_at || "");
+    if (startAt === null) return;
+
+    const endAt = prompt("Edit Auto Close At (example: 2026-04-23T20:00, leave empty if none):", exam.end_at || "");
+    if (endAt === null) return;
+
+    const description = prompt("Edit Description:", exam.description || "");
+    if (description === null) return;
+
+    if (!title.trim() || !packageName.trim() || !url.trim() || !status.trim()) {
+      alert("Title, package, URL, and status are required.");
+      return;
     }
 
-    subscriptionChartInstance = new Chart(canvas, {
-      type: "doughnut",
-      data: {
-        labels: ["Active", "Inactive"],
-        datasets: [
-          {
-            data: [activeSubscriptions, inactiveSubscriptions]
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: true, position: "bottom" }
-        }
-      }
+    if (startAt && endAt && endAt <= startAt) {
+      alert("Auto close time must be later than go-live time.");
+      return;
+    }
+
+    await updateExamLink(exam.id, {
+      title: title.trim(),
+      package: packageName.trim(),
+      url: url.trim(),
+      status: status.trim(),
+      start_at: startAt.trim(),
+      end_at: endAt.trim(),
+      description: description.trim()
     });
   }
 
-  const studentsTableBody = document.getElementById("studentsTableBody");
-  const packagesTableBody = document.getElementById("packagesTableBody");
-  const paymentsTableBody = document.getElementById("paymentsTableBody");
-  const examTableBody = document.getElementById("examTableBody");
+  async function bindActionChange(event) {
+    const select = event.target.closest("select");
+    if (!select) return;
 
-  const totalStudents = document.getElementById("totalStudents");
-  const activeSubscriptions = document.getElementById("activeSubscriptions");
-  const inactiveSubscriptions = document.getElementById("inactiveSubscriptions");
-  const paidStudents = document.getElementById("paidStudents");
-  const pendingPayments = document.getElementById("pendingPayments");
-  const totalRevenue = document.getElementById("totalRevenue");
-  const activeExamLinks = document.getElementById("activeExamLinks");
-  const totalPackages = document.getElementById("totalPackages");
-
-  const studentMessage = document.getElementById("studentMessage");
-  const packageMessage = document.getElementById("packageMessage");
-  const examMessage = document.getElementById("examMessage");
-
-  async function loadOverview() {
-    try {
-      const data = await safeJson("/api/admin/overview");
-
-      totalStudents.textContent = data.totalStudents || 0;
-      activeSubscriptions.textContent = data.activeSubscriptions || 0;
-      inactiveSubscriptions.textContent = data.inactiveSubscriptions || 0;
-      paidStudents.textContent = data.paidStudents || 0;
-      pendingPayments.textContent = data.pendingPayments || 0;
-      totalRevenue.textContent = "TZS " + Number(data.totalRevenue || 0).toLocaleString();
-      activeExamLinks.textContent = data.activeExamLinks || 0;
-      totalPackages.textContent = data.totalPackages || 0;
-
-      renderRevenueChart(
-        Number(data.totalRevenue || 0),
-        Number(data.paidStudents || 0),
-        Number(data.pendingPayments || 0)
-      );
-
-      renderSubscriptionChart(
-        Number(data.activeSubscriptions || 0),
-        Number(data.inactiveSubscriptions || 0)
-      );
-    } catch (error) {
-      console.error("Overview error:", error);
+    if (select.dataset.paymentId) {
+      const id = select.dataset.paymentId;
+      const action = select.value;
+      select.value = "";
+      if (!action) return;
+      await updatePaymentStatus(id, action);
+      return;
     }
-  }
 
-  async function loadPackages() {
-    try {
-      const packages = await safeJson("/api/admin/packages");
-      allPackages = packages;
+    if (select.dataset.studentId) {
+      const id = select.dataset.studentId;
+      const action = select.value;
+      select.value = "";
+      if (!action) return;
 
-      packagesTableBody.innerHTML = "";
-      packages.forEach((pkg) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${pkg.name || "-"}</td>
-          <td>${pkg.code || "-"}</td>
-          <td>${pkg.price ? "TZS " + Number(pkg.price).toLocaleString() : "-"}</td>
-          <td>${pkg.period || "-"}</td>
-          <td>${pkg.description || "-"}</td>
-          <td>${statusBadge(pkg.status || "inactive")}</td>
-          <td>${pkg.studentsCount || 0}</td>
-          <td>${pkg.createdDate || "-"}</td>
-        `;
-        packagesTableBody.appendChild(tr);
+      if (action === "delete") {
+        await deleteStudent(id);
+        return;
+      }
+
+      await changeStudentStatus(id, action);
+      return;
+    }
+
+    if (select.dataset.examId) {
+      const id = select.dataset.examId;
+      const action = select.value;
+      select.value = "";
+      if (!action) return;
+
+      const exam = getExamById(id);
+      if (!exam) {
+        alert("Exam link not found.");
+        return;
+      }
+
+      if (action === "edit") {
+        await editExamLink(exam);
+        return;
+      }
+
+      if (action === "delete") {
+        await deleteExamLink(id);
+        return;
+      }
+let newStatus = action;
+
+if(action === "go-live") newStatus = "live";
+if(action === "set-scheduled") newStatus = "scheduled";
+if(action === "set-draft") newStatus = "draft";
+if(action === "set-closed") newStatus = "closed";
+      await updateExamLink(id, {
+        title: exam.title,
+        package: exam.package,
+        url: exam.url,
+        status: newStatus,
+        start_at: exam.start_at || "",
+        end_at: exam.end_at || "",
+        description: exam.description || ""
       });
-    } catch (error) {
-      console.error("Packages error:", error);
     }
   }
 
-  function packageOptions(currentCode = "") {
-    const base = [`<option value="">No package</option>`];
-    allPackages.forEach((pkg) => {
-      base.push(
-        `<option value="${pkg.code}" ${currentCode === pkg.code ? "selected" : ""}>${pkg.name}</option>`
-      );
-    });
-    return base.join("");
-  }
+  function overridePaymentsRender() {
+    if (typeof window.renderPaymentsTable !== "function") return;
 
-  async function loadStudents(queryString = "") {
-    try {
-      const students = await safeJson("/api/admin/students" + queryString);
+    window.renderPaymentsTable = function (data = window.dashboardData.payments) {
+      const tableBody = document.getElementById("paymentsTableBody");
+      if (!tableBody) return;
 
-      studentsTableBody.innerHTML = "";
-      students.forEach((student) => {
-        const tr = document.createElement("tr");
+      if (!data.length) {
+        tableBody.innerHTML = `<tr><td colspan="6" class="muted">No payments found.</td></tr>`;
+        return;
+      }
 
-        tr.innerHTML = `
-          <td>${student.studentId || "-"}</td>
-          <td>${student.name || "-"}</td>
-          <td>${student.email || "-"}</td>
-          <td>${student.phone || "-"}</td>
-          <td>${student.region || "-"}</td>
-          <td>${student.registeredDate || "-"}</td>
-          <td>${student.packageName || "-"}</td>
-          <td>${statusBadge(student.subscriptionStatus || "inactive")}</td>
-          <td>${statusBadge(student.paymentStatus || "pending")}</td>
-          <td>${student.amountPaid ? "TZS " + Number(student.amountPaid).toLocaleString() : "TZS 0"}</td>
-          <td>${student.paymentMethod || "-"}</td>
-          <td>${statusBadge(student.examAccessStatus || "blocked")}</td>
+      tableBody.innerHTML = data.map(item => `
+        <tr>
+          <td>${item.student_name || item.name || "N/A"}</td>
+          <td>${item.amount || "0"}</td>
+          <td>${item.method || "N/A"}</td>
+          <td>${item.reference || "N/A"}</td>
+          <td>${item.date || item.created_at || "N/A"}</td>
           <td>
-            <div class="manage-box">
-              <select class="manage-package">
-                ${packageOptions(student.packageCode || "")}
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              ${window.getBadge(item.status || "Pending")}
+              <select class="action-select" data-payment-id="${Number(item.id)}">
+                <option value="">Action</option>
+                <option value="Approved">Approve</option>
+                <option value="Rejected">Reject</option>
+                <option value="Pending">Pending</option>
               </select>
-
-              <select class="manage-subscription">
-                <option value="active" ${student.subscriptionStatus === "active" ? "selected" : ""}>Active</option>
-                <option value="inactive" ${student.subscriptionStatus === "inactive" ? "selected" : ""}>Inactive</option>
-              </select>
-
-              <select class="manage-payment">
-                <option value="paid" ${student.paymentStatus === "paid" ? "selected" : ""}>Paid</option>
-                <option value="pending" ${student.paymentStatus === "pending" ? "selected" : ""}>Pending</option>
-              </select>
-
-              <input class="manage-amount" type="number" value="${student.amountPaid || 0}" placeholder="Amount paid">
-              <input class="manage-method" type="text" value="${student.paymentMethod || ""}" placeholder="Payment method">
-
-              <button class="manage-save">Save Changes</button>
             </div>
           </td>
-        `;
-
-        const saveBtn = tr.querySelector(".manage-save");
-        const packageSelect = tr.querySelector(".manage-package");
-        const subscriptionSelect = tr.querySelector(".manage-subscription");
-        const paymentSelect = tr.querySelector(".manage-payment");
-        const amountInput = tr.querySelector(".manage-amount");
-        const methodInput = tr.querySelector(".manage-method");
-
-        saveBtn.addEventListener("click", async () => {
-          try {
-            const result = await safeJson(`/api/admin/students/${student.studentId}/manage`, {
-              method: "PATCH",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                packageCode: packageSelect.value,
-                subscriptionStatus: subscriptionSelect.value,
-                paymentStatus: paymentSelect.value,
-                amountPaid: amountInput.value,
-                paymentMethod: methodInput.value
-              })
-            });
-
-            if (result.success) {
-              showMessage(studentMessage, `Student ${student.studentId} updated successfully.`, "success");
-              await loadOverview();
-              await loadStudents(queryString);
-              await loadPayments();
-            } else {
-              showMessage(studentMessage, result.message || "Failed to update student.", "error");
-            }
-          } catch (error) {
-            showMessage(studentMessage, "Failed to update student.", "error");
-          }
-        });
-
-        studentsTableBody.appendChild(tr);
-      });
-    } catch (error) {
-      console.error("Students error:", error);
-    }
+        </tr>
+      `).join("");
+    };
   }
 
-  async function loadPayments() {
-    try {
-      const payments = await safeJson("/api/admin/payments");
+  document.addEventListener("change", bindActionChange);
 
-      paymentsTableBody.innerHTML = "";
-      payments.forEach((payment) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${payment.paymentId || "-"}</td>
-          <td>${payment.studentId || "-"}</td>
-          <td>${payment.studentName || "-"}</td>
-          <td>${payment.email || "-"}</td>
-          <td>${payment.packageName || "-"}</td>
-          <td>${payment.amount ? "TZS " + Number(payment.amount).toLocaleString() : "-"}</td>
-          <td>${payment.period || "-"}</td>
-          <td>${payment.method || "-"}</td>
-          <td>${statusBadge(payment.status || "pending")}</td>
-          <td>${payment.date || "-"}</td>
-        `;
-        paymentsTableBody.appendChild(tr);
-      });
-    } catch (error) {
-      console.error("Payments error:", error);
-    }
+  function init() {
+    overridePaymentsRender();
+    if (typeof window.renderPaymentsTable === "function") window.renderPaymentsTable();
   }
 
-  async function loadExams() {
-    try {
-      const exams = await safeJson("/api/admin/exams");
-
-      examTableBody.innerHTML = "";
-      exams.forEach((exam) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${exam.title || "-"}</td>
-          <td>${exam.url ? `<a href="${exam.url}" target="_blank">Open Link</a>` : "-"}</td>
-          <td>${exam.groupName || "-"}</td>
-          <td>${statusBadge(exam.status || "inactive")}</td>
-          <td>${exam.dateAdded || "-"}</td>
-          <td>${exam.allowedStudents || 0}</td>
-        `;
-        examTableBody.appendChild(tr);
-      });
-    } catch (error) {
-      console.error("Exams error:", error);
-    }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
   }
-
-  const applyFiltersBtn = document.getElementById("applyStudentFiltersBtn");
-  if (applyFiltersBtn) {
-    applyFiltersBtn.addEventListener("click", function () {
-      const q = document.getElementById("studentSearch").value.trim();
-      const subscription = document.getElementById("studentSubscriptionFilter").value;
-      const payment = document.getElementById("studentPaymentFilter").value;
-      const pkg = document.getElementById("studentPackageFilter").value.trim();
-
-      const params = new URLSearchParams();
-      if (q) params.append("q", q);
-      if (subscription) params.append("subscription", subscription);
-      if (payment) params.append("payment", payment);
-      if (pkg) params.append("package", pkg);
-
-      const queryString = params.toString() ? "?" + params.toString() : "";
-      loadStudents(queryString);
-    });
-  }
-
-  const resetFiltersBtn = document.getElementById("resetStudentFiltersBtn");
-  if (resetFiltersBtn) {
-    resetFiltersBtn.addEventListener("click", function () {
-      document.getElementById("studentSearch").value = "";
-      document.getElementById("studentSubscriptionFilter").value = "";
-      document.getElementById("studentPaymentFilter").value = "";
-      document.getElementById("studentPackageFilter").value = "";
-      loadStudents();
-    });
-  }
-
-  const saveStudentBtn = document.getElementById("saveStudentBtn");
-  if (saveStudentBtn) {
-    saveStudentBtn.addEventListener("click", async function () {
-      const name = document.getElementById("studentName").value.trim();
-      const email = document.getElementById("studentEmail").value.trim();
-      const phone = document.getElementById("studentPhone").value.trim();
-      const region = document.getElementById("studentRegion").value.trim();
-      const password = document.getElementById("studentPassword").value.trim() || "12345";
-
-      if (!name || !email || !phone || !region) {
-        showMessage(studentMessage, "Name, email, phone and region are required.", "error");
-        return;
-      }
-
-      try {
-        const result = await safeJson("/api/admin/students", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, phone, region, password })
-        });
-
-        if (result.success) {
-          showMessage(studentMessage, result.message || "Student saved successfully.", "success");
-          document.getElementById("studentName").value = "";
-          document.getElementById("studentEmail").value = "";
-          document.getElementById("studentPhone").value = "";
-          document.getElementById("studentRegion").value = "";
-          document.getElementById("studentPassword").value = "";
-          await loadOverview();
-          await loadStudents();
-        } else {
-          showMessage(studentMessage, result.message || "Failed to save student.", "error");
-        }
-      } catch (error) {
-        showMessage(studentMessage, "Failed to save student.", "error");
-      }
-    });
-  }
-
-  const savePackageBtn = document.getElementById("savePackageBtn");
-  if (savePackageBtn) {
-    savePackageBtn.addEventListener("click", async function () {
-      const name = document.getElementById("packageName").value.trim();
-      const code = document.getElementById("packageCode").value.trim();
-      const price = document.getElementById("packagePrice").value.trim();
-      const duration = document.getElementById("packageDuration").value.trim();
-      const description = document.getElementById("packageDescription").value.trim();
-      const status = document.getElementById("packageStatus").value;
-
-      if (!name || !price || !duration) {
-        showMessage(packageMessage, "Package name, price and duration are required.", "error");
-        return;
-      }
-
-      try {
-        const result = await safeJson("/api/admin/packages", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, code, price, duration, description, status })
-        });
-
-        if (result.success) {
-          showMessage(packageMessage, result.message || "Package saved successfully.", "success");
-          document.getElementById("packageName").value = "";
-          document.getElementById("packageCode").value = "";
-          document.getElementById("packagePrice").value = "";
-          document.getElementById("packageDuration").value = "";
-          document.getElementById("packageDescription").value = "";
-          document.getElementById("packageStatus").value = "active";
-          await loadPackages();
-          await loadOverview();
-          await loadStudents();
-        } else {
-          showMessage(packageMessage, result.message || "Failed to save package.", "error");
-        }
-      } catch (error) {
-        showMessage(packageMessage, "Failed to save package.", "error");
-      }
-    });
-  }
-
-  const saveExamBtn = document.getElementById("saveExamBtn");
-  if (saveExamBtn) {
-    saveExamBtn.addEventListener("click", async function () {
-      const title = document.getElementById("examTitle").value.trim();
-      const url = document.getElementById("examUrl").value.trim();
-      const groupName = document.getElementById("examGroup").value.trim();
-      const status = document.getElementById("examStatus").value;
-
-      if (!title || !url) {
-        showMessage(examMessage, "Exam title and exam link are required.", "error");
-        return;
-      }
-
-      try {
-        const result = await safeJson("/api/admin/exams", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title, url, groupName, status })
-        });
-
-        if (result.success) {
-          showMessage(examMessage, result.message || "Exam link saved successfully.", "success");
-          document.getElementById("examTitle").value = "";
-          document.getElementById("examUrl").value = "";
-          document.getElementById("examGroup").value = "";
-          document.getElementById("examStatus").value = "active";
-          await loadExams();
-          await loadOverview();
-        } else {
-          showMessage(examMessage, result.message || "Failed to save exam link.", "error");
-        }
-      } catch (error) {
-        showMessage(examMessage, "Failed to save exam link.", "error");
-      }
-    });
-  }
-
-  const loadStudentsBtn = document.getElementById("loadStudentsBtn");
-  if (loadStudentsBtn) loadStudentsBtn.addEventListener("click", () => loadStudents());
-
-  const loadPackagesBtn = document.getElementById("loadPackagesBtn");
-  if (loadPackagesBtn) loadPackagesBtn.addEventListener("click", async () => {
-    await loadPackages();
-    await loadStudents();
-  });
-
-  const loadPaymentsBtn = document.getElementById("loadPaymentsBtn");
-  if (loadPaymentsBtn) loadPaymentsBtn.addEventListener("click", () => loadPayments());
-
-  const loadExamsBtn = document.getElementById("loadExamsBtn");
-  if (loadExamsBtn) loadExamsBtn.addEventListener("click", () => loadExams());
-
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", function () {
-      window.location.href = "/login";
-    });
-  }
-
-  async function init() {
-    openPanel("overview");
-    await loadPackages();
-    await loadOverview();
-    await loadStudents();
-    await loadPayments();
-    await loadExams();
-  }
-
-  init();
-});
+})();

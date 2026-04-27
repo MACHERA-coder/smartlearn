@@ -377,7 +377,7 @@
       </div>
 
       <div class="top-actions">
-        <a href="/student-dashboard" class="top-btn">Back to Dashboard</a>
+        <a href="/student-dashboard.html" class="top-btn">Back to Dashboard</a>
         <a href="/exam-access.html" class="top-btn">Exam Access</a>
       </div>
     </div>
@@ -422,7 +422,7 @@
     const urlParams = new URLSearchParams(window.location.search);
 
     if (!studentId || !studentEmail) {
-      window.location.href = "/login";
+      window.location.href = "/login.html";
     }
 
     const selectedPackageCode = (urlParams.get("package") || "").trim();
@@ -462,18 +462,18 @@
       const data = await response.json();
 
       if (!data.success) {
-        window.location.href = "/login";
+      window.location.href = "/login.html";
         return null;
       }
 
       const student = data.student;
       studentNameHeading.textContent = `${student.name}, choose the package that matches your budget and learning plan.`;
       studentIdText.textContent = student.studentId || "-";
-      currentPackageText.textContent = student.packageName || "No package selected";
+      currentPackageText.textContent = student.package || "No package selected";
       paintStatus(student.subscriptionStatus);
 
       localStorage.setItem("studentSubscriptionStatus", student.subscriptionStatus || "inactive");
-      localStorage.setItem("studentPackageName", student.packageName || "");
+      localStorage.setItem("studentPackageName", student.package || "");
 
       return student;
     }
@@ -519,7 +519,7 @@
 
     async function loadPackages(student) {
       try {
-        const response = await fetch("/api/packages");
+        const response = await fetch('/packages/active');
         const data = await response.json();
 
         packagesGrid.innerHTML = "";
@@ -530,9 +530,15 @@
         }
 
         data.packages.forEach((pkg, index) => {
+          data.packages.forEach((pkg, index) => {
+
+  pkg.code = pkg.code || pkg.name;
+  pkg.period = pkg.period || (pkg.duration_days + " days");
+
+  const state = getButtonState(
           const state = getButtonState(
             pkg,
-            (student.packageName || "").trim(),
+            (student.package || "").trim(),
             (student.subscriptionStatus || "inactive").trim().toLowerCase()
           );
 
@@ -569,14 +575,16 @@
       }
     }
 
-    async function init() {
-      const student = await loadProfile();
-      if (student) {
-        await loadPackages(student);
-      }
-    }
+   async function init(){
+  const student = await loadProfile();
 
-    init();
+  await loadPackages(student || {
+    package: "",
+    subscriptionStatus: "inactive"
+  });
+}
+
+init();
   </script>
 </body>
 </html>
