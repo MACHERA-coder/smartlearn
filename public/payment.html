@@ -4,67 +4,66 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SmartLearn Payment</title>
+
   <style>
     *{
       margin:0;
       padding:0;
       box-sizing:border-box;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family:Arial, Helvetica, sans-serif;
     }
 
     :root{
-      --bg-1:#04142e;
-      --bg-2:#0a2f73;
-      --bg-3:#1160d9;
-      --text:#ffffff;
-      --text-soft:#dbeafe;
+      --blue1:#031b46;
+      --blue2:#0b3f91;
+      --blue3:#1d6ef2;
+      --white:#ffffff;
+      --soft:#dbeafe;
       --dark:#0f172a;
       --muted:#64748b;
       --primary:#2563eb;
-      --primary-2:#60a5fa;
-      --success:#16a34a;
-      --success-bg:#dcfce7;
-      --warning:#92400e;
-      --warning-bg:#fef3c7;
-      --danger:#dc2626;
-      --danger-bg:#fee2e2;
-      --shadow:0 20px 50px rgba(15,23,42,0.12);
+      --primary2:#60a5fa;
+      --green:#16a34a;
+      --greenBg:#dcfce7;
+      --yellow:#92400e;
+      --yellowBg:#fef3c7;
+      --red:#dc2626;
+      --redBg:#fee2e2;
+      --shadow:0 22px 55px rgba(0,0,0,.18);
     }
 
     body{
       min-height:100vh;
-      color:var(--text);
+      color:white;
+      padding:24px;
       background:
-        radial-gradient(circle at 10% 20%, rgba(125,211,252,0.16), transparent 20%),
-        radial-gradient(circle at 90% 15%, rgba(96,165,250,0.16), transparent 20%),
-        radial-gradient(circle at 80% 85%, rgba(255,255,255,0.08), transparent 18%),
-        linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3));
-      overflow-x:hidden;
-      padding:22px;
+        radial-gradient(circle at 12% 18%, rgba(125,211,252,.18), transparent 22%),
+        radial-gradient(circle at 88% 12%, rgba(96,165,250,.20), transparent 25%),
+        linear-gradient(135deg,var(--blue1),var(--blue2),var(--blue3));
     }
 
     .container{
       max-width:1280px;
-      margin:0 auto;
+      margin:auto;
     }
 
     .topbar{
       display:flex;
       justify-content:space-between;
       align-items:center;
-      gap:14px;
+      gap:15px;
       flex-wrap:wrap;
-      margin-bottom:22px;
+      margin-bottom:24px;
     }
 
     .brand h1{
-      font-size:32px;
-      margin-bottom:4px;
-      font-weight:800;
+      font-size:34px;
+      font-weight:900;
+      margin-bottom:5px;
     }
 
     .brand p{
-      color:var(--text-soft);
+      color:var(--soft);
       font-size:14px;
     }
 
@@ -76,69 +75,76 @@
 
     .top-btn{
       text-decoration:none;
+      color:white;
       padding:12px 16px;
       border-radius:14px;
-      font-weight:700;
+      background:rgba(255,255,255,.13);
+      border:1px solid rgba(255,255,255,.18);
+      font-weight:800;
       font-size:14px;
-      color:#fff;
-      background:rgba(255,255,255,0.12);
-      border:1px solid rgba(255,255,255,0.14);
     }
 
     .hero{
       display:grid;
-      grid-template-columns:1.15fr 0.85fr;
-      gap:20px;
+      grid-template-columns:1.15fr .85fr;
+      gap:22px;
       margin-bottom:22px;
     }
 
-    .hero-left{
+    .glass{
+      background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.08));
+      border:1px solid rgba(255,255,255,.17);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      border-radius:30px;
       position:relative;
       overflow:hidden;
-      border-radius:28px;
-      padding:32px;
-      background:linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.08));
-      border:1px solid rgba(255,255,255,0.16);
-      box-shadow:0 24px 60px rgba(0,0,0,0.18);
-      backdrop-filter: blur(18px);
+    }
+
+    .hero-left{
+      padding:34px;
+      min-height:245px;
     }
 
     .hero-left::before{
       content:"";
       position:absolute;
-      width:220px;
-      height:220px;
+      width:230px;
+      height:230px;
       border-radius:50%;
-      top:-70px;
-      right:-60px;
-      background:rgba(255,255,255,0.08);
+      top:-75px;
+      right:-55px;
+      background:rgba(255,255,255,.08);
     }
 
     .badge{
       display:inline-block;
       padding:10px 16px;
       border-radius:999px;
-      background:rgba(255,255,255,0.12);
-      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.15);
       font-size:13px;
-      font-weight:700;
+      font-weight:800;
       color:#e0f2fe;
       margin-bottom:18px;
+      position:relative;
+      z-index:2;
     }
 
     .hero-left h2{
-      font-size:38px;
+      font-size:39px;
       line-height:1.1;
-      margin-bottom:14px;
-      font-weight:800;
-      max-width:700px;
+      margin-bottom:15px;
+      position:relative;
+      z-index:2;
     }
 
     .hero-left p{
-      font-size:16px;
+      color:var(--soft);
       line-height:1.8;
-      color:var(--text-soft);
       max-width:720px;
+      position:relative;
+      z-index:2;
     }
 
     .hero-right{
@@ -147,44 +153,40 @@
     }
 
     .mini-card{
-      background:#ffffff;
+      background:white;
       color:var(--dark);
-      border-radius:22px;
+      border-radius:23px;
       padding:20px;
-      box-shadow:var(--shadow);
-      border:1px solid rgba(226,232,240,0.9);
+      box-shadow:0 18px 40px rgba(15,23,42,.14);
     }
 
     .mini-card small{
       display:block;
       color:var(--muted);
-      font-size:13px;
       margin-bottom:8px;
     }
 
     .mini-card strong{
       font-size:18px;
-      display:block;
-      line-height:1.5;
     }
 
     .status-pill{
       display:inline-block;
+      margin-top:10px;
       padding:8px 14px;
       border-radius:999px;
       font-size:13px;
-      font-weight:800;
-      margin-top:8px;
+      font-weight:900;
     }
 
     .status-active{
-      background:var(--success-bg);
-      color:var(--success);
+      background:var(--greenBg);
+      color:var(--green);
     }
 
     .status-inactive{
-      background:var(--warning-bg);
-      color:var(--warning);
+      background:var(--yellowBg);
+      color:var(--yellow);
     }
 
     .main-grid{
@@ -194,17 +196,16 @@
     }
 
     .card{
-      background:#ffffff;
+      background:white;
       color:var(--dark);
-      border-radius:24px;
-      padding:24px;
-      box-shadow:var(--shadow);
-      border:1px solid rgba(226,232,240,0.95);
+      border-radius:26px;
+      padding:26px;
+      box-shadow:0 20px 45px rgba(15,23,42,.15);
     }
 
     .card h3{
       font-size:24px;
-      margin-bottom:18px;
+      margin-bottom:20px;
     }
 
     .summary-grid{
@@ -225,30 +226,28 @@
       display:block;
       color:var(--muted);
       margin-bottom:8px;
-      font-size:13px;
     }
 
     .summary-box strong{
-      display:block;
       font-size:16px;
-      line-height:1.6;
     }
 
     .upgrade-note{
+      display:none;
       margin-top:12px;
-      padding:14px 16px;
+      padding:15px;
       border-radius:16px;
       background:#eff6ff;
-      color:#1e3a8a;
       border:1px solid #bfdbfe;
-      font-size:14px;
+      color:#1e3a8a;
+      font-weight:800;
       line-height:1.7;
-      font-weight:700;
-      display:none;
+      font-size:14px;
     }
 
     .method-list{
       display:grid;
+      grid-template-columns:1fr 1fr;
       gap:14px;
       margin-bottom:18px;
     }
@@ -256,16 +255,23 @@
     .method-item{
       border:2px solid #dbeafe;
       background:#f8fbff;
-      border-radius:18px;
+      border-radius:20px;
       padding:16px;
       cursor:pointer;
-      transition:all 0.18s ease;
+      transition:.2s ease;
+      min-height:92px;
+    }
+
+    .method-item:hover{
+      transform:translateY(-2px);
+      border-color:#60a5fa;
+      box-shadow:0 10px 24px rgba(37,99,235,.12);
     }
 
     .method-item.active{
       border-color:#2563eb;
-      background:#eff6ff;
-      box-shadow:0 8px 20px rgba(37,99,235,0.12);
+      background:linear-gradient(135deg,#eff6ff,#dbeafe);
+      box-shadow:0 12px 28px rgba(37,99,235,.18);
     }
 
     .method-item strong{
@@ -277,63 +283,97 @@
     .method-item span{
       color:#64748b;
       font-size:14px;
-      line-height:1.6;
+      line-height:1.5;
+    }
+
+    .method-icon{
+      font-size:22px;
+      margin-bottom:7px;
+    }
+
+    .payment-extra{
+      display:none;
+      margin-bottom:16px;
+      background:#f8fafc;
+      border:1px solid #e2e8f0;
+      border-radius:18px;
+      padding:16px;
+    }
+
+    .payment-extra label{
+      display:block;
+      font-weight:800;
+      margin-bottom:8px;
+      color:#0f172a;
+    }
+
+    .payment-extra input{
+      width:100%;
+      padding:14px 16px;
+      border:1px solid #cbd5e1;
+      border-radius:14px;
+      font-size:15px;
+      outline:none;
+    }
+
+    .payment-extra input:focus{
+      border-color:#2563eb;
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
     }
 
     .pay-btn{
       width:100%;
       border:none;
       border-radius:20px;
-      padding:17px 18px;
+      padding:17px;
       cursor:pointer;
-      background:linear-gradient(90deg, var(--primary-2), var(--primary));
-      color:#fff;
+      background:linear-gradient(90deg,var(--primary2),var(--primary));
+      color:white;
       font-size:18px;
-      font-weight:800;
-      box-shadow:0 15px 28px rgba(37,99,235,0.34);
-      transition:transform 0.18s ease, box-shadow 0.18s ease;
+      font-weight:900;
+      box-shadow:0 16px 30px rgba(37,99,235,.34);
     }
 
     .pay-btn:hover{
       transform:translateY(-1px);
-      box-shadow:0 18px 32px rgba(37,99,235,0.4);
+      box-shadow:0 20px 36px rgba(37,99,235,.42);
     }
 
     .pay-btn:disabled{
-      opacity:0.7;
+      opacity:.65;
       cursor:not-allowed;
       transform:none;
     }
 
     .message{
+      display:none;
       margin-top:16px;
       padding:14px 16px;
       border-radius:16px;
       font-size:14px;
-      font-weight:700;
-      display:none;
+      font-weight:800;
       line-height:1.6;
-    }
-
-    .message.error{
-      display:block;
-      background:var(--danger-bg);
-      border:1px solid #fca5a5;
-      color:#991b1b;
     }
 
     .message.success{
       display:block;
-      background:var(--success-bg);
-      border:1px solid #86efac;
+      background:var(--greenBg);
       color:#166534;
+      border:1px solid #86efac;
+    }
+
+    .message.error{
+      display:block;
+      background:var(--redBg);
+      color:#991b1b;
+      border:1px solid #fca5a5;
     }
 
     .message.warning{
       display:block;
-      background:var(--warning-bg);
-      border:1px solid #fcd34d;
+      background:var(--yellowBg);
       color:#92400e;
+      border:1px solid #fcd34d;
     }
 
     .info-note{
@@ -345,7 +385,7 @@
       color:#1e3a8a;
       font-size:14px;
       line-height:1.7;
-      font-weight:700;
+      font-weight:800;
     }
 
     .compare-box{
@@ -357,8 +397,8 @@
     }
 
     .compare-box h4{
-      font-size:18px;
       margin-bottom:10px;
+      font-size:18px;
     }
 
     .compare-box p{
@@ -367,7 +407,7 @@
       line-height:1.7;
     }
 
-    @media (max-width: 980px){
+    @media(max-width:980px){
       .hero,
       .main-grid{
         grid-template-columns:1fr;
@@ -378,31 +418,27 @@
       }
     }
 
-    @media (max-width: 680px){
+    @media(max-width:680px){
       body{
         padding:16px;
       }
 
-      .hero-left{
-        padding:24px 20px;
-      }
-
-      .hero-left h2{
-        font-size:26px;
-      }
-
-      .card{
-        padding:20px;
-      }
-
+      .method-list,
       .summary-grid{
         grid-template-columns:1fr;
+      }
+
+      .hero-left,
+      .card{
+        padding:22px;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
+
     <div class="topbar">
       <div class="brand">
         <h1>Payment Center</h1>
@@ -411,16 +447,17 @@
 
       <div class="top-actions">
         <a href="/subscription.html" class="top-btn">Back to Subscription</a>
-        <a href="/student-dashboard" class="top-btn">Dashboard</a>
+        <a href="/student-dashboard.html" class="top-btn">Dashboard</a>
       </div>
     </div>
 
     <section class="hero">
-      <div class="hero-left">
+      <div class="hero-left glass">
         <div class="badge">SmartLearn Secure Payment</div>
         <h2 id="heroHeading">Complete payment for your selected package.</h2>
         <p>
-          Review your chosen package, confirm your payment method and activate your subscription. Upgrades will move you from your current plan to the selected higher package.
+          Review your package, choose a payment method, enter required details and complete payment.
+          After successful payment, your subscription will be activated automatically.
         </p>
       </div>
 
@@ -444,6 +481,7 @@
     </section>
 
     <section class="main-grid">
+
       <div class="card">
         <h3>Payment Summary</h3>
 
@@ -464,7 +502,7 @@
           </div>
 
           <div class="summary-box">
-            <small>Payment Type</small>
+            <small>Subscription Type</small>
             <strong id="paymentTypeText">New Subscription</strong>
           </div>
         </div>
@@ -474,7 +512,8 @@
         <div class="compare-box">
           <h4>Payment Information</h4>
           <p>
-            Confirm the package you selected. Once payment is completed successfully, your subscription status will become active and exam access will be unlocked automatically.
+            Select your preferred payment method. For mobile money, enter the phone number that will receive payment prompt.
+            For Lipa Namba, enter transaction reference after payment.
           </p>
         </div>
       </div>
@@ -483,50 +522,81 @@
         <h3>Choose Payment Method</h3>
 
         <div class="method-list">
-          <div class="method-item" data-method="M-Pesa">
+          <div class="method-item" data-method="M-Pesa" data-input="phone">
+            <div class="method-icon">
+  <img src="/images/mpesa.jpeg">
+</div>
             <strong>M-Pesa</strong>
             <span>Fast mobile payment using M-Pesa.</span>
           </div>
 
-          <div class="method-item" data-method="Mixx by Yas">
+          <div class="method-item" data-method="Mixx by Yas" data-input="phone">
+           <div class="method-icon">
+  <img src="/images/mixx.jpg">
+</div>
             <strong>Mixx by Yas</strong>
             <span>Pay securely using Mixx by Yas.</span>
           </div>
 
-          <div class="method-item" data-method="Airtel Money">
+          <div class="method-item" data-method="Airtel Money" data-input="phone">
+            <div class="method-icon">
+  <img src="/images/airtel.jpg">
+</div>
             <strong>Airtel Money</strong>
             <span>Pay easily using Airtel Money.</span>
           </div>
+
+          <div class="method-item" data-method="HaloPesa" data-input="phone">
+            <div class="method-icon">
+  <img src="/images/halopesa.jpg">
+</div>
+            <strong>HaloPesa</strong>
+            <span>Pay using HaloPesa mobile money.</span>
+          </div>
+
+          <div class="method-item" data-method="Card Payment" data-input="card">
+            <div class="method-icon">
+  <img src="/images/card.jpg">
+</div>
+            <strong>Card Payment</strong>
+            <span>Pay using Visa or Mastercard.</span>
+          </div>
+
+          <div class="method-item" data-method="Lipa Namba" data-input="reference">
+            <div class="method-icon">
+  <img src="/images/card.jpg">
+</div>
+            <strong>Lipa Namba</strong>
+            <span>Pay using merchant till or Lipa Namba.</span>
+          </div>
+        </div>
+
+        <div id="paymentExtra" class="payment-extra">
+          <label id="extraLabel">Payment Details</label>
+          <input id="extraInput" type="text" placeholder="Enter details" />
         </div>
 
         <button id="payBtn" class="pay-btn">Pay Now</button>
+
         <div id="messageBox" class="message"></div>
 
         <div class="info-note">
           After successful payment, your subscription will activate automatically and you will continue to the exam access page.
         </div>
       </div>
+
     </section>
   </div>
 
   <script>
-    const studentId = localStorage.getItem("studentId");
-    const studentName = localStorage.getItem("studentName");
-    const studentEmail = localStorage.getItem("studentEmail");
-    const currentPackageName = (localStorage.getItem("studentPackageName") || "").trim();
-    const currentSubscriptionStatus = (localStorage.getItem("studentSubscriptionStatus") || "inactive").trim().toLowerCase();
-
-    if (!studentId || !studentEmail) {
-      window.location.href = "/login";
-    }
-
     const urlParams = new URLSearchParams(window.location.search);
-    const packageCode = (urlParams.get("package") || "").trim();
-    const packageName = (urlParams.get("name") || "").trim();
-    const packagePrice = Number(urlParams.get("price") || 0);
-    const packagePeriod = (urlParams.get("period") || "").trim();
 
-    if (!packageCode || !packageName || !packagePrice || !packagePeriod) {
+    const packageCode = (urlParams.get("package") || "").trim();
+    const packageName = (urlParams.get("name") || urlParams.get("package") || "").trim();
+    const packagePrice = Number(urlParams.get("price") || urlParams.get("amount") || 0);
+    const packagePeriod = (urlParams.get("period") || "30 days").trim();
+
+    if (!packageCode || !packageName || !packagePrice) {
       window.location.href = "/subscription.html";
     }
 
@@ -545,8 +615,13 @@
     const payBtn = document.getElementById("payBtn");
     const messageBox = document.getElementById("messageBox");
     const methodItems = document.querySelectorAll(".method-item");
+    const paymentExtra = document.getElementById("paymentExtra");
+    const extraLabel = document.getElementById("extraLabel");
+    const extraInput = document.getElementById("extraInput");
 
     let selectedMethod = "";
+    let selectedInputType = "";
+    let student = null;
 
     function showMessage(text, type) {
       messageBox.className = `message ${type}`;
@@ -555,33 +630,84 @@
 
     function paintStatus(status) {
       const value = (status || "inactive").toLowerCase();
+
       subscriptionText.textContent = value === "active" ? "Active" : "Inactive";
       statusBadge.textContent = value === "active" ? "Active" : "Inactive";
+
       statusBadge.classList.remove("status-active", "status-inactive");
       statusBadge.classList.add(value === "active" ? "status-active" : "status-inactive");
     }
 
+    async function loadStudentProfile() {
+      try {
+        const response = await fetch("/student/me");
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          window.location.href = "/login.html";
+          return null;
+        }
+
+        student = {
+          id: data.id,
+          name: data.name || "Student",
+          email: data.email || "",
+          currentPackage: data.subscription?.package || data.package || "",
+          subscriptionStatus: (data.subscription?.status || "inactive").toLowerCase()
+        };
+
+        return student;
+
+      } catch (error) {
+        console.error(error);
+        window.location.href = "/login.html";
+        return null;
+      }
+    }
+
     function setupPage() {
-      studentIdText.textContent = studentId || "-";
-      currentPackageText.textContent = currentPackageName || "No package selected";
-      paintStatus(currentSubscriptionStatus);
+      studentIdText.textContent = student.id || "-";
+      currentPackageText.textContent = student.currentPackage || "No package selected";
+      paintStatus(student.subscriptionStatus);
 
       selectedPackageText.textContent = packageName;
       selectedPriceText.textContent = `TZS ${packagePrice.toLocaleString()}`;
       selectedPeriodText.textContent = packagePeriod;
 
-      const isUpgrade = currentSubscriptionStatus === "active" &&
-        currentPackageName &&
-        currentPackageName.toLowerCase() !== packageName.toLowerCase();
+      const isUpgrade =
+        student.subscriptionStatus === "active" &&
+        student.currentPackage &&
+        student.currentPackage.toLowerCase() !== packageName.toLowerCase();
 
       if (isUpgrade) {
-        heroHeading.textContent = `Upgrade from ${currentPackageName} to ${packageName}.`;
-        paymentTypeText.textContent = "Upgrade Payment";
+        heroHeading.textContent = `Upgrade from ${student.currentPackage} to ${packageName}.`;
+        paymentTypeText.textContent = "Subscription Upgrading";
         upgradeNote.style.display = "block";
-        upgradeNote.textContent = `You are upgrading from ${currentPackageName} to ${packageName}. After payment, your account will switch to the new package automatically.`;
+        upgradeNote.textContent =
+          `You are upgrading from ${student.currentPackage} to ${packageName}. After payment, your account will switch to the new package automatically.`;
       } else {
         heroHeading.textContent = `Complete payment for ${packageName}.`;
-        paymentTypeText.textContent = currentSubscriptionStatus === "active" ? "Renewal / Package Payment" : "New Subscription";
+        paymentTypeText.textContent =
+          student.subscriptionStatus === "active" ? "Subscription Renewal" : "New Subscription";
+      }
+    }
+
+    function showPaymentInput(type, method) {
+      paymentExtra.style.display = "block";
+      extraInput.value = "";
+
+      if (type === "phone") {
+        extraLabel.textContent = `${method} Phone Number`;
+        extraInput.placeholder = "Example: 0712345678";
+        extraInput.type = "tel";
+      } else if (type === "card") {
+        extraLabel.textContent = "Card Payment Reference";
+        extraInput.placeholder = "Enter card transaction/reference number";
+        extraInput.type = "text";
+      } else if (type === "reference") {
+        extraLabel.textContent = "Lipa Namba Transaction Reference";
+        extraInput.placeholder = "Enter transaction reference";
+        extraInput.type = "text";
       }
     }
 
@@ -589,13 +715,30 @@
       item.addEventListener("click", () => {
         methodItems.forEach(box => box.classList.remove("active"));
         item.classList.add("active");
+
         selectedMethod = item.getAttribute("data-method") || "";
+        selectedInputType = item.getAttribute("data-input") || "";
+
+        showPaymentInput(selectedInputType, selectedMethod);
+        showMessage(`Selected payment method: ${selectedMethod}`, "success");
       });
     });
 
     async function handlePayment() {
+      if (!student) {
+        showMessage("Student profile not loaded. Please login again.", "error");
+        return;
+      }
+
       if (!selectedMethod) {
         showMessage("Please choose a payment method first.", "warning");
+        return;
+      }
+
+      const paymentDetail = extraInput.value.trim();
+
+      if (!paymentDetail) {
+        showMessage("Please enter payment details before continuing.", "warning");
         return;
       }
 
@@ -605,27 +748,25 @@
       try {
         const response = await fetch("/api/pay", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            studentId,
-            email: studentEmail,
-            studentName,
+            studentId: student.id,
+            email: student.email,
+            studentName: student.name,
             package: packageCode,
             packageCode,
             packageName,
             price: packagePrice,
+            amount: packagePrice,
             period: packagePeriod,
-            method: selectedMethod
+            method: selectedMethod,
+            paymentDetail
           })
         });
 
         const data = await response.json();
 
-        if (data.success) {
-          localStorage.setItem("studentPackageName", packageName);
-          localStorage.setItem("studentSubscriptionStatus", "active");
+        if (response.ok && data.success) {
           showMessage(data.message || "Payment completed successfully.", "success");
 
           setTimeout(() => {
@@ -635,7 +776,9 @@
           showMessage(data.message || "Payment failed.", "error");
           payBtn.disabled = false;
         }
+
       } catch (error) {
+        console.error(error);
         showMessage("Server error during payment.", "error");
         payBtn.disabled = false;
       }
@@ -643,7 +786,13 @@
 
     payBtn.addEventListener("click", handlePayment);
 
-    setupPage();
+    async function init() {
+      const loadedStudent = await loadStudentProfile();
+      if (!loadedStudent) return;
+      setupPage();
+    }
+
+    init();
   </script>
 </body>
 </html>

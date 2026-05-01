@@ -497,4 +497,12 @@ body{
 
 .admin-form input:focus{
   border-color:#38bdf8;
+}.subscription-card.active {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+
+.subscription-card.inactive {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
 }

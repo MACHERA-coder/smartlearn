@@ -583,8 +583,8 @@
         </div>
 
         <div class="bottom-links">
-          Already have an account? <a href="/login">Login here</a><br>
-          <a href="/">Back to Home</a>
+          Already have an account? <a href="/login.html">Login here</a><br>
+          <a href="/index.html">Back to Home</a>
         </div>
       </div>
     </section>
@@ -614,41 +614,49 @@
     registerForm.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("fullName").value.trim();
+      const fullName = document.getElementById("fullName").value.trim();
       const phone = document.getElementById("phone").value.trim();
       const region = document.getElementById("region").value.trim();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
 
+      if (!fullName || !phone || !region || !email || !password) {
+        showMessage("Full name, phone number, region, email and password are required", "error");
+        return;
+      }
+
       showMessage("Creating account...", "success");
 
       try {
-        const response = await fetch("/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            name,
-            phone,
-            region,
-            email,
-            password
-          })
-        });
+        const response = await fetch("/student/register", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    full_name: fullName,
+    phone,
+    region,
+    email,
+    password
+  })
+});
 
-        const data = await response.json();
+        let data = {};
+        try {
+          data = await response.json();
+        } catch (jsonError) {
+          data = { success: false, message: "Invalid server response." };
+        }
 
-        if (data.success) {
-          showMessage(`Registration successful. Student ID: ${data.studentId}`, "success");
+        if (response.ok) {
+          showMessage(data.message || "Account created successfully. Redirecting to login...", "success");
+
           setTimeout(() => {
-            window.location.href = "/login";
+            window.location.href = "/login.html";
           }, 1200);
         } else {
-          showMessage(data.message || "Registration failed.", "error");
+          showMessage(data.message || "Registration failed. Please try again.", "error");
         }
       } catch (error) {
-        console.error("Registration error:", error);
         showMessage("Server error during registration.", "error");
       }
     });

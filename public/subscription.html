@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SmartLearn Subscription Packages</title>
+
   <style>
     *{
       margin:0;
@@ -25,6 +26,8 @@
       --primary-2:#60a5fa;
       --success:#16a34a;
       --success-bg:#dcfce7;
+      --danger:#dc2626;
+      --danger-bg:#fee2e2;
       --warning:#92400e;
       --warning-bg:#fef3c7;
       --shadow:0 20px 50px rgba(15,23,42,0.12);
@@ -131,6 +134,8 @@
       margin-bottom:14px;
       font-weight:800;
       max-width:700px;
+      position:relative;
+      z-index:2;
     }
 
     .hero-left p{
@@ -138,6 +143,8 @@
       line-height:1.8;
       color:var(--text-soft);
       max-width:700px;
+      position:relative;
+      z-index:2;
     }
 
     .hero-right{
@@ -182,8 +189,51 @@
     }
 
     .status-inactive{
-      background:var(--warning-bg);
-      color:var(--warning);
+      background:var(--danger-bg);
+      color:var(--danger);
+    }
+
+    .message{
+      margin:18px 0;
+      padding:14px 16px;
+      border-radius:16px;
+      font-size:14px;
+      font-weight:700;
+      display:none;
+      line-height:1.6;
+    }
+
+    .message.success{
+      display:block;
+      background:#dcfce7;
+      color:#166534;
+      border:1px solid #86efac;
+    }
+
+    .message.error{
+      display:block;
+      background:#fee2e2;
+      color:#991b1b;
+      border:1px solid #fca5a5;
+    }
+
+    .section-title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:24px 0 18px;
+      gap:14px;
+      flex-wrap:wrap;
+    }
+
+    .section-title h2{
+      font-size:28px;
+      font-weight:800;
+    }
+
+    .section-title p{
+      color:#dbeafe;
+      font-size:14px;
     }
 
     .grid{
@@ -220,7 +270,7 @@
     }
 
     .package-card.current-plan{
-      outline:4px solid rgba(96,165,250,.28);
+      outline:4px solid rgba(34,197,94,.28);
     }
 
     .plan-badge{
@@ -231,6 +281,7 @@
       border-radius:999px;
       font-size:12px;
       font-weight:800;
+      z-index:2;
     }
 
     .plan-badge.current{
@@ -247,6 +298,7 @@
       font-size:24px;
       margin-bottom:18px;
       font-weight:800;
+      padding-right:70px;
     }
 
     .price{
@@ -314,28 +366,13 @@
       box-shadow:none;
     }
 
-    .message{
-      margin-top:18px;
-      padding:14px 16px;
-      border-radius:16px;
-      font-size:14px;
-      font-weight:700;
-      display:none;
-      line-height:1.6;
-    }
-
-    .message.success{
-      display:block;
-      background:#dcfce7;
-      color:#166534;
-      border:1px solid #86efac;
-    }
-
-    .message.error{
-      display:block;
-      background:#fee2e2;
-      color:#991b1b;
-      border:1px solid #fca5a5;
+    .loading-card{
+      background:#ffffff;
+      color:#0f172a;
+      padding:24px;
+      border-radius:20px;
+      font-weight:800;
+      grid-column:1 / -1;
     }
 
     @media (max-width: 980px){
@@ -368,6 +405,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="topbar">
@@ -387,7 +425,8 @@
         <div class="badge">SmartLearn Subscription Center</div>
         <h2 id="studentNameHeading">Choose the package that matches your budget and learning plan.</h2>
         <p>
-          Select a subscription package below. After choosing your package, you will continue directly to the payment page to activate your account.
+          Select a subscription package below. After choosing your package,
+          you will continue directly to the payment page to activate your account.
         </p>
       </div>
 
@@ -412,30 +451,19 @@
 
     <div id="messageBox" class="message"></div>
 
-    <section class="grid" id="packagesGrid"></section>
+    <div class="section-title">
+      <div>
+        <h2>Available Packages</h2>
+        <p>Choose one package below to continue to payment.</p>
+      </div>
+    </div>
+
+    <section class="grid" id="packagesGrid">
+      <div class="loading-card">Loading packages...</div>
+    </section>
   </div>
 
   <script>
-    const studentId = localStorage.getItem("studentId");
-    const studentName = localStorage.getItem("studentName");
-    const studentEmail = localStorage.getItem("studentEmail");
-    const urlParams = new URLSearchParams(window.location.search);
-
-    if (!studentId || !studentEmail) {
-      window.location.href = "/login.html";
-    }
-
-    const selectedPackageCode = (urlParams.get("package") || "").trim();
-    const selectedPackageName = (urlParams.get("name") || "").trim();
-    const selectedPackagePrice = (urlParams.get("price") || "").trim();
-    const selectedPackagePeriod = (urlParams.get("period") || "").trim();
-
-    if (selectedPackageCode && selectedPackageName && selectedPackagePrice && selectedPackagePeriod) {
-      window.location.replace(
-        `/payment.html?package=${encodeURIComponent(selectedPackageCode)}&name=${encodeURIComponent(selectedPackageName)}&price=${encodeURIComponent(selectedPackagePrice)}&period=${encodeURIComponent(selectedPackagePeriod)}`
-      );
-    }
-
     const studentNameHeading = document.getElementById("studentNameHeading");
     const studentIdText = document.getElementById("studentIdText");
     const currentPackageText = document.getElementById("currentPackageText");
@@ -449,47 +477,81 @@
       messageBox.textContent = text;
     }
 
+    function clearMessage() {
+      messageBox.className = "message";
+      messageBox.textContent = "";
+    }
+
     function paintStatus(status) {
       const value = (status || "inactive").toLowerCase();
+
       subscriptionText.textContent = value === "active" ? "Active" : "Inactive";
       statusBadge.textContent = value === "active" ? "Active" : "Inactive";
+
       statusBadge.classList.remove("status-active", "status-inactive");
       statusBadge.classList.add(value === "active" ? "status-active" : "status-inactive");
     }
 
     async function loadProfile() {
-      const response = await fetch(`/api/student/profile/${studentId}`);
-      const data = await response.json();
+      try {
+        const response = await fetch("/student/me");
+        const data = await response.json();
 
-      if (!data.success) {
-      window.location.href = "/login.html";
+        if (!response.ok || !data.success) {
+          window.location.href = "/login.html";
+          return null;
+        }
+
+        studentNameHeading.textContent =
+          `${data.name || "Student"}, choose the package that matches your budget and learning plan.`;
+
+        studentIdText.textContent = data.id || "-";
+
+        const currentPackage =
+          data.subscription?.package ||
+          data.package ||
+          "No package selected";
+
+        currentPackageText.textContent = currentPackage;
+
+        const status = data.subscription?.status || "inactive";
+        paintStatus(status);
+
+        return {
+          id: data.id,
+          name: data.name || "Student",
+          package: currentPackage === "No package selected" ? "" : currentPackage,
+          subscriptionStatus: status
+        };
+
+      } catch (error) {
+        console.error("Profile error:", error);
+        window.location.href = "/login.html";
         return null;
       }
-
-      const student = data.student;
-      studentNameHeading.textContent = `${student.name}, choose the package that matches your budget and learning plan.`;
-      studentIdText.textContent = student.studentId || "-";
-      currentPackageText.textContent = student.package || "No package selected";
-      paintStatus(student.subscriptionStatus);
-
-      localStorage.setItem("studentSubscriptionStatus", student.subscriptionStatus || "inactive");
-      localStorage.setItem("studentPackageName", student.package || "");
-
-      return student;
     }
 
     function createFeatureList(pkg) {
-      const features = [
-        `${pkg.period} access`,
-        `Package: ${pkg.name}`,
-        `Secure activation flow`
-      ];
+      const features = [];
+
+      features.push(`${pkg.duration_days || 30} days access`);
+      features.push(`Package: ${pkg.name}`);
+      features.push(`Exam limit: ${pkg.exam_limit || "Unlimited"}`);
+
+      if (pkg.student_limit) {
+        features.push(`Student limit: ${pkg.student_limit}`);
+      }
+
+      features.push("Secure payment activation");
 
       return features.map(item => `<div class="feature-item">${item}</div>`).join("");
     }
 
     function getButtonState(pkg, currentPackageName, currentSubscriptionStatus) {
-      const hasActivePlan = currentSubscriptionStatus === "active" && currentPackageName;
+      const hasActivePlan =
+        currentSubscriptionStatus === "active" &&
+        currentPackageName &&
+        currentPackageName !== "No package selected";
 
       if (!hasActivePlan) {
         return {
@@ -500,7 +562,7 @@
         };
       }
 
-      if (currentPackageName.toLowerCase() === pkg.name.toLowerCase()) {
+      if (currentPackageName.toLowerCase() === String(pkg.name).toLowerCase()) {
         return {
           label: "Subscribed",
           className: "subscribed",
@@ -519,23 +581,21 @@
 
     async function loadPackages(student) {
       try {
-        const response = await fetch('/packages/active');
+        clearMessage();
+
+        const response = await fetch("/packages/active");
         const data = await response.json();
 
         packagesGrid.innerHTML = "";
 
-        if (!data.success || !Array.isArray(data.packages) || data.packages.length === 0) {
-          showMessage("No packages available at the moment.", "error");
+        if (!response.ok || !data.success || !Array.isArray(data.packages) || data.packages.length === 0) {
+          packagesGrid.innerHTML = `<div class="loading-card">No active packages found. Please create active packages from admin panel.</div>`;
           return;
         }
 
         data.packages.forEach((pkg, index) => {
-          data.packages.forEach((pkg, index) => {
+          const period = `${pkg.duration_days || 30} days`;
 
-  pkg.code = pkg.code || pkg.name;
-  pkg.period = pkg.period || (pkg.duration_days + " days");
-
-  const state = getButtonState(
           const state = getButtonState(
             pkg,
             (student.package || "").trim(),
@@ -545,14 +605,17 @@
           const isCurrent = state.label === "Subscribed";
 
           const card = document.createElement("div");
-          card.className = "package-card" + (index === 1 ? " popular" : "") + (isCurrent ? " current-plan" : "");
+          card.className =
+            "package-card" +
+            (index === 1 ? " popular" : "") +
+            (isCurrent ? " current-plan" : "");
 
           card.innerHTML = `
             ${state.badge}
             <h3>${pkg.name}</h3>
             <div class="price">TZS ${Number(pkg.price || 0).toLocaleString()}</div>
-            <div class="period">${pkg.period || "Monthly"}</div>
-            <div class="desc">${pkg.description || ""}</div>
+            <div class="period">${period}</div>
+            <div class="desc">${pkg.features || "Access SmartLearn exams and learning resources."}</div>
             <div class="feature-list">${createFeatureList(pkg)}</div>
             <button class="choose-btn ${state.className}" ${state.disabled ? "disabled" : ""}>
               ${state.label}
@@ -563,28 +626,33 @@
 
           if (!state.disabled) {
             button.addEventListener("click", () => {
+              const packageName = pkg.name || "";
+              const packagePrice = pkg.price || 0;
+
               window.location.href =
-                `/payment.html?package=${encodeURIComponent(pkg.code)}&name=${encodeURIComponent(pkg.name)}&price=${encodeURIComponent(pkg.price)}&period=${encodeURIComponent(pkg.period || "Monthly")}`;
+                `/payment.html?package=${encodeURIComponent(packageName)}&name=${encodeURIComponent(packageName)}&price=${encodeURIComponent(packagePrice)}&amount=${encodeURIComponent(packagePrice)}&period=${encodeURIComponent(period)}`;
             });
           }
 
           packagesGrid.appendChild(card);
         });
+
       } catch (error) {
+        console.error("Packages error:", error);
+        packagesGrid.innerHTML = `<div class="loading-card">Failed to load packages.</div>`;
         showMessage("Failed to load packages.", "error");
       }
     }
 
-   async function init(){
-  const student = await loadProfile();
+    async function init() {
+      const student = await loadProfile();
 
-  await loadPackages(student || {
-    package: "",
-    subscriptionStatus: "inactive"
-  });
-}
+      if (!student) return;
 
-init();
+      await loadPackages(student);
+    }
+
+    init();
   </script>
 </body>
 </html>

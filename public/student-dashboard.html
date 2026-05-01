@@ -846,12 +846,29 @@ String(subscriptionPackageText.textContent)
 ? "Click to View"
 : "Click to Preview";
 
-  let href = "#";
+let href = "#";
 
 const cardType = isLive ? "live" : "scheduled";
 
-if (group.count > 0) {
+const activePackage =
+(subscriptionPackageText.textContent || "")
+.toLowerCase()
+.trim();
+
+const hasPackage =
+activePackage &&
+!activePackage.includes("no package") &&
+!activePackage.includes("inactive");
+
+const ownsThisPackage =
+activePackage.includes(group.pkg.toLowerCase());
+
+if (!hasPackage) {
+  href = "/subscription.html";
+} else if (ownsThisPackage && group.count > 0) {
   href = `/exam-access.html?package=${encodeURIComponent(group.pkg)}&type=${cardType}`;
+} else {
+  href = "/subscription.html";
 }
     return `
       <div class="exam-card ${cardClass} ${group.count === 0 ? "empty" : ""}">
@@ -863,7 +880,7 @@ if (group.count > 0) {
           View all ${group.status} exams in the ${group.pkg} package.
           Available exams: <strong>${group.count}</strong>.
         </p>
-        <a class="exam-btn" href="${href}" target="_blank">${buttonText}</a>
+        <a class="exam-btn" href="${href}">${!hasPackage ? "Subscribe to Access" : buttonText}</a>
       </div>
     `;
   }).join("");

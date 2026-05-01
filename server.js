@@ -476,53 +476,101 @@ app.post('/student/login', async (req, res) => {
 
 app.post('/student/register', async (req, res) => {
   try {
-    const { full_name, email, phone, password, package: pkg } = req.body;
+    const { full_name, email, phone, password } = req.body;
 
     if (!full_name || !email || !password) {
-      return res.status(400).json({ success: false, message: 'Full name, email and password are required' });
+      return res.status(400).json({
+        success: false,
+        message: 'Full name, email and password are required'
+      });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ success: false, message: 'Password must have at least 6 characters' });
+      return res.status(400).json({
+        success: false,
+        message: 'Password must have at least 6 characters'
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    const [existing] = await db.promise().query(
+      `SELECT id FROM students WHERE email = ? LIMIT 1`,
+      [cleanEmail]
+    );
+
+    if (existing.length > 0) {
+      return res.status(409).json({
+        success: false,
+        message: 'Email already exists'
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+const regionMap = {
+  "Morogoro": "MOR",
+  "Mwanza": "MWZ",
+  "Arusha": "ARS",
+  "Dar es Salaam": "DSM",
+  "Dodoma": "DOD",
+  "Kilimanjaro": "KLM",
+  "Mbeya": "MBY",
+  "Tanga": "TNG"
+};
 
-    const [result] = await db.promise().query(`
-      INSERT INTO students (full_name, email, phone, password, package, student_status, subscription_status, role)
-      VALUES (?, ?, ?, ?, ?, 'active', 'inactive', 'student')
-    `, [
-      full_name.trim(),
-      email.trim(),
-      phone || null,
-      hashedPassword,
-      pkg || null
-    ]);
+const region = req.body.region || "Unknown";
+const prefix = regionMap[region] || "STD";
+const year = new Date().getFullYear();
 
+const [regionCountResult] = await db.promise().query(
+  "SELECT COUNT(*) AS count FROM students WHERE region = ?",
+  [region]
+);
+
+const [totalCountResult] = await db.promise().query(
+  "SELECT COUNT(*) AS count FROM students"
+);
+
+const regionNumber = String(regionCountResult[0].count + 1).padStart(3, "0");
+const totalNumber = String(totalCountResult[0].count + 1).padStart(4, "0");
+
+const studentId = `${prefix}-${year}-${regionNumber}-${totalNumber}`;
     await db.promise().query(`
-      INSERT INTO subscriptions (student_id, package, status)
-      VALUES (?, ?, 'inactive')
-    `, [result.insertId, pkg || null]);
+  INSERT INTO students 
+  (student_id, full_name, email, phone, password, package, region, student_status, subscription_status, role)
+  VALUES (?, ?, ?, ?, ?, NULL, ?, 'active', 'inactive', 'student')
+`, [
+  studentId,
+  full_name.trim(),
+  cleanEmail,
+  phone || null,
+  hashedPassword,
+  region
+]);
 
-    res.json({ success: true, message: 'Student registered successfully' });
+    return res.status(201).json({
+      success: true,
+      message: 'Account created successfully'
+    });
+
   } catch (error) {
-    if (error.code === 'ER_DUP_ENTRY') {
-      return res.status(409).json({ success: false, message: 'Email already exists' });
-    }
-
     console.error('Student register error:', error);
-    res.status(500).json({ success: false, message: 'Registration failed' });
+
+    return res.status(500).json({
+      success: false,
+      message: 'Registration failed'
+    });
   }
 });
 
-app.post('/register', async (req, res) => {
+app.post('/register', (req, res) => {
   req.url = '/student/register';
-  app._router.handle(req, res);
+  app.handle(req, res);
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
   req.url = '/student/login';
-  app._router.handle(req, res);
+  app.handle(req, res);
 });
 
 app.post('/logout', (req, res) => {
@@ -905,6 +953,7 @@ app.get('/student/me', verifyToken, requireStudent, async (req, res) => {
 
     res.json({
       success:true,
+      id: student.student_id,
       name: student.full_name,
       email: student.email,
       phone: student.phone,
