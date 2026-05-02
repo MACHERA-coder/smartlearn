@@ -478,9 +478,9 @@ app.post('/student/login', async (req, res) => {
 
 app.post('/student/register', async (req, res) => {
   try {
-    const { full_name, email, phone, password } = req.body;
+    const { full_name, email, phone, region, password } = req.body;
 
-    if (!full_name || !email || !password) {
+    if (!full_name || !email || !phone || !region || !password) {
       return res.status(400).json({
         success: false,
         message: 'Full name, email and password are required'
