@@ -39,6 +39,27 @@ db.getConnection((err, connection) => {
   console.log('Connected to MySQL database pool');
   connection.release();
   createTables();
+  db.query(`
+  ALTER TABLE students
+  ADD COLUMN student_id VARCHAR(50) UNIQUE
+`, (err) => {
+  if (err && !err.message.includes('Duplicate column')) {
+    console.error('student_id fix error:', err.message);
+  } else {
+    console.log('student_id column ready');
+  }
+});
+
+db.query(`
+  ALTER TABLE students
+  ADD COLUMN region VARCHAR(100)
+`, (err) => {
+  if (err && !err.message.includes('Duplicate column')) {
+    console.error('region fix error:', err.message);
+  } else {
+    console.log('region column ready');
+  }
+});
 });
 
 function createTables() {
